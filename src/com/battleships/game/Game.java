@@ -98,4 +98,12 @@ public class Game {
         }
         return true;
     }
+
+    public int getPointsLeft() {
+        return pointsLeft;
+    }
+
+    public int getPointsRight() {
+        return pointsRight;
+    }
 }
