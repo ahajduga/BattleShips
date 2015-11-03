@@ -26,31 +26,38 @@ public class Game {
 
     /**
      * @param board - 0 left, 1 right
+     * @param length
      * @param row
      * @param col
+     * @param direction - 0 left, 1 up, 2 right, 3 down
+     * @return
      */
-    public void setNewShipInGame(Boolean board, Integer row, Integer col){
+    public Boolean setNewShipInGame(
+            Boolean board,
+            Integer length,
+            Integer row,
+            Integer col,
+            Integer direction
+    ){
         Ship ship = new Ship();
-        ship.setShip(row, col);
+        ship.setShip(board, length, row, col, direction);
+
         if(board){
+            for(Ship s: boardLeft){
+                if(s.isCollision(ship)){
+                    return false;
+                }
+            }
             boardLeft.add(ship);
         } else {
+            for(Ship s: boardRight){
+                if(s.isCollision(ship)){
+                    return false;
+                }
+            }
             boardRight.add(ship);
         }
-    }
-
-    /**
-     * @param board - 0 left, 1 right
-     * @param ship - No.
-     * @param row
-     * @param col
-     */
-    public void setExistingShipInGame(Boolean board, Integer ship, Integer row, Integer col){
-        if(board){
-            boardLeft.get(ship).setShip(row, col);
-        } else {
-            boardRight.get(ship).setShip(row, col);
-        }
+        return true;
     }
 
     /**
