@@ -1,6 +1,6 @@
 package com.battleships.game;
 
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
+//import com.sun.xml.internal.xsom.impl.scd.Iterators;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,13 +38,7 @@ public class Game {
      * @param direction - 0 left, 1 up, 2 right, 3 down
      * @return
      */
-    public Boolean setNewShipInGame(
-            Boolean board,
-            Integer length,
-            Integer row,
-            Integer col,
-            Integer direction
-    ){
+    public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Integer direction){
         Ship ship = new Ship(length);
         ship.setShip(board, length, row, col, direction);
 
@@ -54,16 +48,33 @@ public class Game {
                     return false;
                 }
             }
-            boardLeft.add(ship);
+            return true;
         } else {
             for(Ship s: boardRight){
                 if(s.isCollision(ship)){
                     return false;
                 }
             }
-            boardRight.add(ship);
+            return true;
         }
-        return true;
+
+    }
+    public void setNewShipInGame(
+            Boolean board,
+            Integer length,
+            Integer row,
+            Integer col,
+            Integer direction
+    ) {
+        if (isPlacementPossible(board, length, row, col, direction)) {
+            Ship ship = new Ship(length);
+            ship.setShip(board, length, row, col, direction);
+            if (board == true)
+                boardLeft.add(ship);
+            boardRight.add(ship);
+
+        }
+
     }
 
     /**
