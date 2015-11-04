@@ -13,6 +13,12 @@ public class Game {
     private int pointsLeft;
     private int pointsRight;
 
+    //Ships count: 4x1, 3x2, 3x2, 1x4
+    private int SINGLE_MAST_SHIPS = 4;
+    private int DUOBLE_MAST_SHIPS = 3;
+    private int TRIPLE_MAST_SHIPS = 2;
+    private int QUAD_MAST_SHIPS   = 1;
+
     private ArrayList<Ship> boardLeft;
     private ArrayList<Ship> boardRight;
 
@@ -39,7 +45,7 @@ public class Game {
             Integer col,
             Integer direction
     ){
-        Ship ship = new Ship();
+        Ship ship = new Ship(length);
         ship.setShip(board, length, row, col, direction);
 
         if(board){
@@ -58,6 +64,39 @@ public class Game {
             boardRight.add(ship);
         }
         return true;
+    }
+
+    /**
+     * @param board - 0 left, 1 right
+     * @param mastCount
+     * @return
+     */
+    public Integer getRemainingShipsCount(Boolean board, Integer mastCount){
+
+        int defaultShipCount = 0;
+
+        switch (mastCount){
+            case 1:
+                defaultShipCount = SINGLE_MAST_SHIPS;
+                break;
+            case 2:
+                defaultShipCount = DUOBLE_MAST_SHIPS;
+                break;
+            case 3:
+                defaultShipCount = TRIPLE_MAST_SHIPS;
+                break;
+            case 4:
+                defaultShipCount = QUAD_MAST_SHIPS;
+                break;
+        }
+
+        if(board){
+            return defaultShipCount - (int) boardLeft.stream()
+                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+        } else {
+            return defaultShipCount - (int) boardRight.stream()
+                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+        }
     }
 
     /**

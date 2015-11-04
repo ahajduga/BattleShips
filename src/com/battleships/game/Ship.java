@@ -7,10 +7,13 @@ import java.util.Arrays;
  */
 public class Ship {
 
+    private int mastCount;
+
     private Boolean[][] shipOriginal;
     private Boolean[][] ship;
 
-    public Ship(){
+    public Ship(int mastCount){
+        this.mastCount = mastCount;
         shipOriginal = new Boolean[10][10];
         ship =         new Boolean[10][10];
         Arrays.fill(shipOriginal, false);
@@ -87,5 +90,9 @@ public class Ship {
             }
         }
         return true;
+    }
+
+    public int getMastCount() {
+        return mastCount;
     }
 }
