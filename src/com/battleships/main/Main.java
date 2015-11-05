@@ -7,8 +7,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    //TODO zamienic placeholdery na zmienne w labelach
-    //TODO wstawianie statkow
+    //TODO pobieranie ilosci poszczegolnych statkow z funkcji i wypelnianie labeli
+    //TODO po wybraniu typu statku i kliknieciu w cell pojawia sie shadow
+    //TODO drugi klik po wybraniu kierunku ustawia statek (po sprawdzeniu czy mozna)
+    //TODO wysyla info o ustawieniu statku
+    //TODO po ustawieniu wszystkich statkow aktywuje sie przycisk start
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
