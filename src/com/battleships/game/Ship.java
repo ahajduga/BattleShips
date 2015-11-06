@@ -19,8 +19,6 @@ public class Ship {
         this.mastCount = mastCount;
         shipOriginal = new Boolean[BOARD_SIZE][BOARD_SIZE];
         ship =         new Boolean[BOARD_SIZE][BOARD_SIZE];
-        Arrays.fill(shipOriginal, false);
-        Arrays.fill(ship,         false);
     }
 
     public Ship(Boolean[][] ship){
