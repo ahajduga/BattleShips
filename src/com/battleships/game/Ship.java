@@ -90,20 +90,20 @@ public class Ship {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 if (ship.shipOriginal[i][j] == true)
-                        if(this.shipOriginal[i][i] == true
-                                || (i + 1 < BOARD_SIZE && this.shipOriginal[i + 1][i]     == true)
-                                || (i + 1 < BOARD_SIZE && this.shipOriginal[i][i + 1]     == true)
-                                || (i + 1 < BOARD_SIZE && this.shipOriginal[i + 1][i + 1] == true)
-                                || (i - 1 >= 0         && this.shipOriginal[i - 1][i]     == true)
-                                || (i - 1 >= 0         && this.shipOriginal[i][i - 1]     == true)
-                                || (i - 1 >= 0         && this.shipOriginal[i - 1][i - 1] == true)
-                                || (i - 1 >= 0 && i + 1 < BOARD_SIZE && this.shipOriginal[i + 1][i - 1] == true)
-                                || (i - 1 >= 0 && i + 1 < BOARD_SIZE && this.shipOriginal[i - 1][i + 1] == true)) {
-                    return false;
-                }
+                    if(this.shipOriginal[i][j] == true
+                            || (i + 1 < BOARD_SIZE && this.shipOriginal[i + 1][j] == true)
+                            || (j + 1 < BOARD_SIZE && this.shipOriginal[i][j + 1] == true)
+                            || (i + 1 < BOARD_SIZE && j + 1 < BOARD_SIZE && this.shipOriginal[i + 1][j + 1] == true)
+                            || (i - 1 >= 0         && this.shipOriginal[i - 1][j] == true)
+                            || (j - 1 >= 0         && this.shipOriginal[i][j - 1] == true)
+                            || (i - 1 >= 0 && j - 1 >= 0         && this.shipOriginal[i - 1][j - 1] == true)
+                            || (j - 1 >= 0 && i + 1 < BOARD_SIZE && this.shipOriginal[i + 1][j - 1] == true)
+                            || (i - 1 >= 0 && j + 1 < BOARD_SIZE && this.shipOriginal[i - 1][j + 1] == true)) {
+                        return true;
+                    }
             }
         }
-        return true;
+        return false;
     }
 
     public int getMastCount() {
