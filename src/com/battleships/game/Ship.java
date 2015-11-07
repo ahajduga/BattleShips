@@ -109,4 +109,8 @@ public class Ship {
     public int getMastCount() {
         return mastCount;
     }
+
+    public boolean[][] getShip() {
+        return ship;
+    }
 }

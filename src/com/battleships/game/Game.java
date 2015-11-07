@@ -39,7 +39,7 @@ public class Game {
      * @return
      */
     public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Integer direction){
-        Ship ship = new Ship(length);
+        Ship ship = new Ship(length);System.out.println("row: " + row + " col: " + col);
         if(!ship.setShip(board, length, row, col, direction)){
             return false;
         }
@@ -109,6 +109,41 @@ public class Game {
         } else {
             return defaultShipCount - (int) boardRight.stream()
                     .filter((ship) -> ship.getMastCount() == mastCount).count();
+        }
+    }
+
+    /**
+     * @param board - 0 left, 1 right
+     * @param row
+     * @param col
+     * @return
+     */
+    public Boolean isPlaceFree(Boolean board, Integer row, Integer col){
+        if(board){
+            for(Ship s: boardLeft){
+                if(s.getShip()[row][col]){
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            for(Ship s: boardRight){
+                if(s.getShip()[row][col]){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    /**
+     * @param board - 0 left, 1 right
+     */
+    public void eraseBoard(Boolean board){
+        if(board){
+            boardLeft.clear();
+        } else {
+            boardRight.clear();
         }
     }
 
