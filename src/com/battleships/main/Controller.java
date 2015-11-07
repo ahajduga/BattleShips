@@ -21,11 +21,11 @@ import java.util.*;
  */
 
 enum Direction {
-    LEFT,UP,RIGHT,DOWN
+    LEFT, UP, RIGHT, DOWN
 }
 
 public class Controller implements Initializable {
-    private final Color highlightColor = Color.color(255d/255d,170d/255d,172d/255d);
+    private final Color highlightColor = Color.color(255d / 255d, 170d / 255d, 172d / 255d);
     @FXML
     private GridPane boardLeft;
     @FXML
@@ -96,136 +96,116 @@ public class Controller implements Initializable {
     private void beginPlacing(Field field) {
         currentField = field;
         currentField.setFill(highlightColor);
-        boardLeft.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                if(shadows.size() != 0){
-                    currentField.setFill(Color.RED);
-                    gameInstance.setNewShipInGame(true,shipMap.get(currentLabel),currentField.getxCell(),currentField.getyCell(),currDir.ordinal());
-                    currentField = null;
-                    currentLabel.setStyle("-fx-background-color:white;");
-                    currentLabel = null;
-                    boardLeft.setOnMouseClicked(null);
-                    boardLeft.setOnMouseMoved(null);
-                    fillShadows();
-                }
-            }
-        });
         boardLeft.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 clearShadows();
                 currDir = getDirection(event);
 
-                    if(areBoundsValid(shipMap.get(currentLabel),field,currDir)){
-                       if( gameInstance.isPlacementPossible(true,shipMap.get(currentLabel),currentField.getxCell(),currentField.getyCell(),currDir.ordinal())){
-                           drawShadows();
-                       }
+                if (areBoundsValid(shipMap.get(currentLabel), field, currDir)) {
+                    if (gameInstance.isPlacementPossible(true, shipMap.get(currentLabel), currentField.getxCell(), currentField.getyCell(), currDir.ordinal())) {
+                        drawShadows();
                     }
-
-               // System.out.println(gameInstance.isPlacementPossible(true,shipMap.get(currentLabel),currentField.getxCell(),currentField.getyCell(),currDir.ordinal()));
+                    else shadows.clear();
+                }
 
 
             }
         });
     }
-    private void fillShadows(){
+
+    private void fillShadows() {
         for (Field f : shadows) {
             f.setFill(Color.RED);
         }
         shadows.clear();
     }
+
     private void clearShadows() {
         for (Field f : shadows) {
             f.setFill(Color.BLACK);
         }
         shadows.clear();
     }
-    private void drawShadows(){
-        for(Field f : shadows){
+
+    private void drawShadows() {
+        for (Field f : shadows) {
             f.setFill(highlightColor);
         }
     }
-    private boolean areBoundsValid(int mast, Field field, Direction currDir){
+
+    private boolean areBoundsValid(int mast, Field field, Direction currDir) {
 
         int x = currentField.getxCell();
         int y = currentField.getyCell();
-        for(int i=1;i<mast;i++){
-            if(currDir == Direction.UP){
-                if(y-i < 0) return false;
-                shadows.add(getField(x,y-i));
-            }
-            else if(currDir == Direction.DOWN){
-                if(y+i > 9) return false;
-                shadows.add(getField(x,y+i));
-            }
-            else if(currDir == Direction.LEFT){
-                if(x-i < 0) return false;
-                shadows.add(getField(x-i,y));
-            }
-            else if(currDir == Direction.RIGHT){
-                if(x+i > 9) return false;
-                shadows.add(getField(x+i,y));
+        for (int i = 1; i < mast; i++) {
+            if (currDir == Direction.UP) {
+                if (y - i < 0) return false;
+                shadows.add(getField(x, y - i));
+            } else if (currDir == Direction.DOWN) {
+                if (y + i > 9) return false;
+                shadows.add(getField(x, y + i));
+            } else if (currDir == Direction.LEFT) {
+                if (x - i < 0) return false;
+                shadows.add(getField(x - i, y));
+            } else if (currDir == Direction.RIGHT) {
+                if (x + i > 9) return false;
+                shadows.add(getField(x + i, y));
             }
         }
         return true;
 
 
     }
-    private Field getField(int y, int x){
-        Node result= null;
+
+    private Field getField(int y, int x) {
+        Node result = null;
         ObservableList<Node> childrens = boardLeft.getChildren();
-        for(Node node: childrens) {
-            if(GridPane.getRowIndex(node) == null || GridPane.getColumnIndex(node) == null) continue;
-            if(boardLeft.getRowIndex(node) == x && boardLeft.getColumnIndex(node) == y) {
+        for (Node node : childrens) {
+            if (GridPane.getRowIndex(node) == null || GridPane.getColumnIndex(node) == null) continue;
+            if (boardLeft.getRowIndex(node) == x && boardLeft.getColumnIndex(node) == y) {
                 result = node;
                 break;
             }
         }
-        return (Field)result;
+        return (Field) result;
     }
 
 
-    private Direction getDirection(MouseEvent event){
+    private Direction getDirection(MouseEvent event) {
         double mouseX = event.getX();
         double mouseY = event.getY();
-        double fieldX = currentField.getxCell()*25+12;
-        double fieldY = currentField.getyCell()*25+12;
+        double fieldX = currentField.getxCell() * 25 + 12;
+        double fieldY = currentField.getyCell() * 25 + 12;
 //        System.out.println(mouseX + ", " + mouseY);
 //        System.out.println(fieldX + ", " + fieldY);
-        if(Math.abs(mouseX-fieldX) > Math.abs(mouseY-fieldY) ){
-           return  mouseX-fieldX > 0 ? Direction.RIGHT : Direction.LEFT;
-        }
-        else{
-            return mouseY-fieldY> 0 ? Direction.DOWN : Direction.UP;
+        if (Math.abs(mouseX - fieldX) > Math.abs(mouseY - fieldY)) {
+            return mouseX - fieldX > 0 ? Direction.RIGHT : Direction.LEFT;
+        } else {
+            return mouseY - fieldY > 0 ? Direction.DOWN : Direction.UP;
         }
     }
+
     private void handleBoardClick(Field field) {
-        if(currentLabel == null)
+        if (currentLabel == null)
             return;
-        if(currentField == null ){
-            currentField = field;
+        if (currentField == null) {
             beginPlacing(field);
+        } else {
+            if (shadows.size() != 0) {
+                currentField.setFill(Color.RED);
+                gameInstance.setNewShipInGame(true, shipMap.get(currentLabel), currentField.getxCell(),currentField.getyCell() , currDir.ordinal());
+                currentField = null;
+                boardLeft.setOnMouseMoved(null);
+                currentLabel.setStyle("-fx-background-color:white;");
+                currentLabel = null;
+                fillShadows();
+
+            }
         }
 
-            if (currentLabel != null) {
-                currentField.setFill(Color.color(255d / 255d, 170d / 255d, 172d / 255d));
-//                boardLeft.setOnMouseMoved(new EventHandler<MouseEvent>() {
-//
-//                    @Override
-//                    public void handle(MouseEvent event) {
-//                        tempFields.clear();
-//                        if (event.getX() > currentField.getX() {
-//                            if (event.getY() > currentField.getY()) {
-//                     //           fillShip(shipMap.get(currentLabel), Direction.UP);
-//                            }
-//
-//                        }
-//                    }
-//                });
-            } else return;
-        }
+
+    }
 
 
     private void fillShip(Integer integer, Direction up) {
@@ -237,7 +217,7 @@ public class Controller implements Initializable {
 
     public void shipSelected(Event event) {
         clearShadows();
-        if(currentField != null)currentField.setFill(Color.BLACK);
+        if (currentField != null) currentField.setFill(Color.BLACK);
         if (currentLabel != null)
             currentLabel.setStyle("-fx-background-color:white;");
         currentLabel = (Label) event.getSource();
