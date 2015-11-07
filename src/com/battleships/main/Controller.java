@@ -21,7 +21,7 @@ import java.util.*;
  */
 
 enum Direction {
-    UP, DOWN, LEFT, RIGHT;
+    LEFT,UP,RIGHT,DOWN
 }
 
 public class Controller implements Initializable {
