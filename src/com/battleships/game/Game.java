@@ -40,7 +40,9 @@ public class Game {
      */
     public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Integer direction){
         Ship ship = new Ship(length);
-        ship.setShip(board, length, row, col, direction);
+        if(!ship.setShip(board, length, row, col, direction)){
+            return false;
+        }
 
         if(board){
             for(Ship s: boardLeft){
