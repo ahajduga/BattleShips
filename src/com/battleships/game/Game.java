@@ -118,17 +118,17 @@ public class Game {
      * @param col
      * @return
      */
-    public Boolean isPlaceFree(Boolean board, Integer row, Integer col){
+    public Boolean isPlaceAndSurrFree(Boolean board, Integer row, Integer col){
         if(board){
             for(Ship s: boardLeft){
-                if(s.getShip()[row][col]){
+                if(!s.isPlaceAndSurrFree(row, col)){
                     return false;
                 }
             }
             return true;
         } else {
             for(Ship s: boardRight){
-                if(s.getShip()[row][col]){
+                if(!s.isPlaceAndSurrFree(row, col)){
                     return false;
                 }
             }

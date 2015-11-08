@@ -106,11 +106,23 @@ public class Ship {
         return false;
     }
 
-    public int getMastCount() {
-        return mastCount;
+    public Boolean isPlaceAndSurrFree(Integer row, Integer col){
+        if(this.ship[row][col] == true
+                || (row + 1 < BOARD_SIZE && this.ship[row + 1][col] == true)
+                || (col + 1 < BOARD_SIZE && this.ship[row][col + 1] == true)
+                || (row + 1 < BOARD_SIZE && col + 1 < BOARD_SIZE && this.ship[row + 1][col + 1] == true)
+                || (row - 1 >= 0         && this.ship[row - 1][col] == true)
+                || (col - 1 >= 0         && this.ship[row][col - 1] == true)
+                || (row - 1 >= 0 && col - 1 >= 0         && this.ship[row - 1][col - 1] == true)
+                || (col - 1 >= 0 && row + 1 < BOARD_SIZE && this.ship[row + 1][col - 1] == true)
+                || (row - 1 >= 0 && col + 1 < BOARD_SIZE && this.ship[row - 1][col + 1] == true)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    public boolean[][] getShip() {
-        return ship;
+    public int getMastCount() {
+        return mastCount;
     }
 }
