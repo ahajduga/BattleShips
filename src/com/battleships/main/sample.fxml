@@ -19,7 +19,7 @@
             <children>
                 <Pane prefHeight="200.0" prefWidth="200.0">
                     <children>
-                        <GridPane fx:id="boardLeft" gridLinesVisible="true" layoutX="14.0" layoutY="75.0" onMouseClicked="#cellSelected">
+                        <GridPane fx:id="boardLeft" gridLinesVisible="true" layoutX="14.0" layoutY="75.0">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
@@ -87,7 +87,7 @@
                   </Label>
                     </children>
                 </Pane>
-            <Pane onMouseClicked="#cellSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
                   <GridPane gridLinesVisible="true" layoutX="21.0" layoutY="74.0" prefHeight="59.0" prefWidth="159.0">
                     <columnConstraints>
@@ -105,7 +105,7 @@
                         <Label fx:id="mast4Field" alignment="CENTER" onMouseClicked="#shipSelected" prefHeight="30.0" prefWidth="100.0" text="Label" style="-fx-background-color:white;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
-                  <Button disable="true" layoutX="52.0" layoutY="361.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" text="Start" />
+                  <Button fx:id="startButton" disable="true" layoutX="52.0" layoutY="361.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" text="Start" />
                </children>
             </Pane>
 

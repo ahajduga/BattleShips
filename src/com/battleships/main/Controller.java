@@ -3,38 +3,32 @@ package com.battleships.main;
 import com.battleships.game.Game;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
 import java.util.*;
 
-/**
- * Created by Adam on 2015-10-16.
- */
 
 enum Direction {
     LEFT, UP, RIGHT, DOWN
 }
 
 public class Controller implements Initializable {
-    private final Color highlightColor = Color.color(255d / 255d, 170d / 255d, 172d / 255d);
+    private static final Color HIGHLIGHT_COLOR = Color.color(255d / 255d, 170d / 255d, 172d / 255d);
+    private static final Color FILL_COLOR = Color.RED;
+    private static final Color INIT_FIELD_COLOR = Color.BLACK;
+    private static final int CELL_SIZE = 25;
     @FXML
     private GridPane boardLeft;
     @FXML
     private GridPane boardRight;
-
-    private Game gameInstance;
-    private Label currentLabel;
-    private Field currentField;
-    private List<Rectangle> tempFields = new ArrayList<>();
     @FXML
     private Label mast1Field;
     @FXML
@@ -43,7 +37,12 @@ public class Controller implements Initializable {
     private Label mast3Field;
     @FXML
     private Label mast4Field;
+    @FXML
+    private Button startButton;
 
+    private Game gameInstance;
+    private Label currentLabel;
+    private Field currentField;
     private Map<Label, Integer> shipMap = new LinkedHashMap<>();
     private List<Field> shadows = new ArrayList<>();
     private Direction currDir;
@@ -58,16 +57,13 @@ public class Controller implements Initializable {
     private void initBoards() {
         for (int i = 0; i < boardLeft.getRowConstraints().size(); i++) {
             for (int j = 0; j < boardLeft.getColumnConstraints().size(); j++) {
-                Field field = new Field(24, Color.GREY, i, j);
-                field.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-                    @Override
-                    public void handle(MouseEvent event) {
-                        Field field = (Field) event.getSource();
-                        handleBoardClick(field);
-                    }
+                Field field = new Field(CELL_SIZE - 1, INIT_FIELD_COLOR, i, j);
+                field.setOnMouseClicked(event -> {
+                    Field field1 = (Field) event.getSource();
+                    handleBoardClick(field1);
                 });
-                Field field2 = new Field(24, Color.GREY, i, j);
+                Field field2 = new Field(CELL_SIZE - 1, INIT_FIELD_COLOR, i, j);
                 boardLeft.add(field, i, j);
                 boardRight.add(field2, i, j);
             }
@@ -85,6 +81,26 @@ public class Controller implements Initializable {
         mast4Field.setText("4m, Left: " + mast4Left);
     }
 
+    private void updateFields() {
+        int mast1Left = gameInstance.getRemainingShipsCount(false, 1);
+        int mast2Left = gameInstance.getRemainingShipsCount(false, 2);
+        int mast3Left = gameInstance.getRemainingShipsCount(false, 3);
+        int mast4Left = gameInstance.getRemainingShipsCount(false, 4);
+
+        mast1Field.setText("1m, Left: " + mast1Left);
+        if (mast1Left == 0) mast1Field.setDisable(true);
+        mast2Field.setText("2m, Left: " + mast2Left);
+        if (mast2Left == 0) mast2Field.setDisable(true);
+        mast3Field.setText("3m, Left: " + mast3Left);
+        if (mast3Left == 0) mast3Field.setDisable(true);
+        mast4Field.setText("4m, Left: " + mast4Left);
+        if (mast4Left == 0) mast4Field.setDisable(true);
+        if (mast1Left + mast2Left + mast3Left + mast4Left == 0) {
+            startButton.setDisable(false);
+
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gameInstance = new Game();
@@ -94,50 +110,45 @@ public class Controller implements Initializable {
     }
 
     private void beginPlacing(Field field) {
-        currentField = field;
-        currentField.setFill(highlightColor);
-        boardLeft.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                clearShadows();
-                currDir = getDirection(event);
 
-                if (areBoundsValid(shipMap.get(currentLabel), field, currDir)) {
-                    if (gameInstance.isPlacementPossible(true, shipMap.get(currentLabel), currentField.getxCell(), currentField.getyCell(), currDir.ordinal())) {
-                        drawShadows();
-                    }
-                    else shadows.clear();
-                }
+        currentField.setFill(HIGHLIGHT_COLOR);
+        boardLeft.setOnMouseMoved(event -> {
+            clearShadows();
+            currDir = getDirection(event);
 
-
+            updateFields();
+            if (areBoundsValid(shipMap.get(currentLabel), field, currDir)) {
+                if (gameInstance.isPlacementPossible(true, shipMap.get(currentLabel), currentField.getyCell(), currentField.getxCell(), currDir.ordinal())) {
+                    drawShadows();
+                } else shadows.clear();
             }
+
+
         });
     }
 
     private void fillShadows() {
         for (Field f : shadows) {
-            f.setFill(Color.RED);
+            f.setFill(FILL_COLOR);
         }
         shadows.clear();
     }
-
     private void clearShadows() {
         for (Field f : shadows) {
-            f.setFill(Color.BLACK);
+            f.setFill(INIT_FIELD_COLOR);
         }
         shadows.clear();
     }
-
     private void drawShadows() {
         for (Field f : shadows) {
-            f.setFill(highlightColor);
+            f.setFill(HIGHLIGHT_COLOR);
         }
     }
 
     private boolean areBoundsValid(int mast, Field field, Direction currDir) {
 
-        int x = currentField.getxCell();
-        int y = currentField.getyCell();
+        int x = field.getxCell();
+        int y = field.getyCell();
         for (int i = 1; i < mast; i++) {
             if (currDir == Direction.UP) {
                 if (y - i < 0) return false;
@@ -175,10 +186,8 @@ public class Controller implements Initializable {
     private Direction getDirection(MouseEvent event) {
         double mouseX = event.getX();
         double mouseY = event.getY();
-        double fieldX = currentField.getxCell() * 25 + 12;
-        double fieldY = currentField.getyCell() * 25 + 12;
-//        System.out.println(mouseX + ", " + mouseY);
-//        System.out.println(fieldX + ", " + fieldY);
+        double fieldX = currentField.getxCell() * CELL_SIZE + CELL_SIZE/2;
+        double fieldY = currentField.getyCell() * CELL_SIZE + CELL_SIZE/2;
         if (Math.abs(mouseX - fieldX) > Math.abs(mouseY - fieldY)) {
             return mouseX - fieldX > 0 ? Direction.RIGHT : Direction.LEFT;
         } else {
@@ -186,19 +195,33 @@ public class Controller implements Initializable {
         }
     }
 
+    private void clearSelection(){
+        updateFields();
+        boardLeft.setOnMouseMoved(null);
+        currentField.setFill(Color.RED);
+        currentField = null;
+        currentLabel.setStyle("-fx-background-color:white;");
+        currentLabel = null;
+    }
     private void handleBoardClick(Field field) {
         if (currentLabel == null)
             return;
         if (currentField == null) {
-            beginPlacing(field);
+
+            if (gameInstance.isPlaceAndSurrFree(true, field.getyCell(), field.getxCell())) {
+                currentField = field;
+                if (shipMap.get(currentLabel) == 1) {
+                    gameInstance.setNewShipInGame(true, 1, currentField.getyCell(), currentField.getxCell(), Direction.DOWN.ordinal());
+                    clearSelection();
+
+                } else
+                    beginPlacing(field);
+            }
         } else {
             if (shadows.size() != 0) {
                 currentField.setFill(Color.RED);
-                gameInstance.setNewShipInGame(true, shipMap.get(currentLabel), currentField.getxCell(),currentField.getyCell() , currDir.ordinal());
-                currentField = null;
-                boardLeft.setOnMouseMoved(null);
-                currentLabel.setStyle("-fx-background-color:white;");
-                currentLabel = null;
+                gameInstance.setNewShipInGame(true, shipMap.get(currentLabel), currentField.getyCell(), currentField.getxCell(), currDir.ordinal());
+                clearSelection();
                 fillShadows();
 
             }
@@ -208,16 +231,12 @@ public class Controller implements Initializable {
     }
 
 
-    private void fillShip(Integer integer, Direction up) {
-        for (int i = 0; i < integer; i++) {
-            //  getRect(boardLeft.get)
-        }
-    }
+
 
 
     public void shipSelected(Event event) {
         clearShadows();
-        if (currentField != null) currentField.setFill(Color.BLACK);
+        if (currentField != null) currentField.setFill(INIT_FIELD_COLOR);
         if (currentLabel != null)
             currentLabel.setStyle("-fx-background-color:white;");
         currentLabel = (Label) event.getSource();

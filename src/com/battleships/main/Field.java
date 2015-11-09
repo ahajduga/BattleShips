@@ -20,6 +20,7 @@ public class Field extends Rectangle{
 
     public Field(int size, Color color, int xCell, int yCell) {
         super(size,size);
+        super.setFill(color);
         this.xCell = xCell;
         this.yCell = yCell;
     }
