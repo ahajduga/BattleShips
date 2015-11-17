@@ -125,4 +125,15 @@ public class Ship {
     public int getMastCount() {
         return mastCount;
     }
+
+    public boolean[][] setOnRandomBoard(boolean[][] board){
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if(this.shipOriginal[i][j] == true){
+                    board[i][j] = true;
+                }
+            }
+        }
+        return board;
+    }
 }

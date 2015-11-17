@@ -2,8 +2,10 @@ package com.battleships.game;
 
 //import com.sun.xml.internal.xsom.impl.scd.Iterators;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created by alex on 18.10.15.
@@ -39,20 +41,20 @@ public class Game {
      * @return
      */
     public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Integer direction){
-        Ship ship = new Ship(length);System.out.println("row: " + row + " col: " + col);
+        Ship ship = new Ship(length);
         if(!ship.setShip(board, length, row, col, direction)){
             return false;
         }
 
         if(board){
-            for(Ship s: boardLeft){
+            for(Ship s: boardRight){
                 if(s.isCollision(ship)){
                     return false;
                 }
             }
             return true;
         } else {
-            for(Ship s: boardRight){
+            for(Ship s: boardLeft){
                 if(s.isCollision(ship)){
                     return false;
                 }
@@ -61,7 +63,7 @@ public class Game {
         }
 
     }
-    public void setNewShipInGame(
+    public boolean setNewShipInGame(
             Boolean board,
             Integer length,
             Integer row,
@@ -71,12 +73,14 @@ public class Game {
         if (isPlacementPossible(board, length, row, col, direction)) {
             Ship ship = new Ship(length);
             ship.setShip(board, length, row, col, direction);
-            if (board == true)
+            if (board)
+                boardRight.add(ship);
+            else
                 boardLeft.add(ship);
-            boardRight.add(ship);
-
+            return true;
+        } else {
+            return false;
         }
-
     }
 
     /**
@@ -199,5 +203,82 @@ public class Game {
 
     public int getPointsRight() {
         return pointsRight;
+    }
+
+    public static void main(String[] args){
+        Game g = new Game();
+        boolean[][] randomBoard = g.getRandomBoard();
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if(randomBoard[i][j] == true){
+                    System.out.print("#");
+                } else {
+                    System.out.print(".");
+                }
+            }
+            System.out.println("");
+        }
+    }
+
+    public boolean[][] getRandomBoard(){
+
+        boolean[][] randomBoard = new boolean[10][10];
+
+        while(true) {
+
+            int shipsSet = 0;
+
+            for (int i = 0; i < QUAD_MAST_SHIPS; i++) {
+                if (setNewShipInGame(false,
+                        4,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(4))) {
+                    shipsSet++;
+                }
+            }
+
+            for (int i = 0; i < TRIPLE_MAST_SHIPS; i++) {
+                if (setNewShipInGame(false,
+                        3,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(4))) {
+                    shipsSet++;
+                }
+            }
+
+            for (int i = 0; i < DUOBLE_MAST_SHIPS; i++) {
+                if (setNewShipInGame(false,
+                        2,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(4))) {
+                    shipsSet++;
+                }
+            }
+
+            for (int i = 0; i < SINGLE_MAST_SHIPS; i++) {
+                if (setNewShipInGame(false,
+                        1,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(4))) {
+                    shipsSet++;
+                }
+            }
+
+            System.out.println("Ustawiono statkow: " + shipsSet);
+
+            if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DUOBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
+                for(Ship s: boardLeft){
+                    randomBoard = s.setOnRandomBoard(randomBoard);
+                }
+                break;
+            } else {
+                boardLeft.clear();
+            }
+        }
+        return randomBoard;
     }
 }
