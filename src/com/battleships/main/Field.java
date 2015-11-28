@@ -1,5 +1,6 @@
 package com.battleships.main;
 
+import com.battleships.utils.Coords;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -8,20 +9,17 @@ import javafx.scene.shape.Rectangle;
  */
 public class Field extends Rectangle{
 
-    public int getxCell() {
-        return xCell;
+
+
+    private Coords coords;
+
+    public Coords getCoords() {
+        return coords;
     }
 
-    public int getyCell() {
-        return yCell;
-    }
-
-    private int xCell, yCell;
-
-    public Field(int size, Color color, int xCell, int yCell) {
+    public Field(int size, Color color, Coords coords) {
         super(size,size);
         super.setFill(color);
-        this.xCell = xCell;
-        this.yCell = yCell;
+        this.coords = coords;
     }
 }

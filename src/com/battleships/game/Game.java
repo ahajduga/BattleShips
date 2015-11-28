@@ -142,6 +142,7 @@ public class Game {
 
     /**
      * @param board - 0 left, 1 right
+     * @param board - 0 left, 1 right
      */
     public void eraseBoard(Boolean board){
         if(board){
@@ -268,7 +269,7 @@ public class Game {
                 }
             }
 
-            System.out.println("Ustawiono statkow: " + shipsSet);
+         //   System.out.println("Ustawiono statkow: " + shipsSet);
 
             if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DUOBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
                 for(Ship s: boardLeft){
