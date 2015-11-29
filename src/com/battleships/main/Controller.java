@@ -1,7 +1,7 @@
 package com.battleships.main;
 
 import com.battleships.game.Game;
-import com.battleships.utils.Coords;
+import com.battleships.utils.*;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -16,18 +16,6 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.*;
 
-
-enum Direction {
-    LEFT, UP, RIGHT, DOWN
-}
-
-enum State {
-    PLACING, SHOOTING;
-}
-
-enum Effect {
-    MISSED, HIT, SANK;
-}
 
 public class Controller implements Initializable {
     private static final Color HIGHLIGHT_COLOR = Color.color(255d / 255d, 170d / 255d, 172d / 255d);
@@ -119,7 +107,7 @@ public class Controller implements Initializable {
             startButton.setOnMouseClicked(event -> {
                 gameInstance.start();
                 while (!gameInstance.isGameOver()) {
-                    if (gameInstance.getCurrentPlayer == Player.HUMAN) {
+                    if (gameInstance.getCurrentPlayer() == Player.HUMAN) {
                         while(currentShot == null) continue;
                         if (gameInstance.canShoot(currentShot.getCoords())) {
                             if (gameInstance.getEffect(currentShot.getCoords()) == Effect.MISSED) {
@@ -128,7 +116,7 @@ public class Controller implements Initializable {
                                 field.setFill(HIGHLIGHT_COLOR);
 
                             } else {
-                                sink(gameInstance.getShipArray(currentShot.getCoords()));
+                                sink(gameInstance.getShipArray());
                             }
                         }
                     } else {

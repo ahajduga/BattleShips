@@ -2,9 +2,14 @@ package com.battleships.game;
 
 //import com.sun.xml.internal.xsom.impl.scd.Iterators;
 
+import com.battleships.utils.Coords;
+import com.battleships.utils.Effect;
+import com.battleships.utils.Player;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -15,6 +20,8 @@ public class Game {
     private int pointsLeft;
     private int pointsRight;
 
+    private Player currentPlayer;
+
     //Ships count: 4x1, 3x2, 3x2, 1x4
     private int SINGLE_MAST_SHIPS = 4;
     private int DUOBLE_MAST_SHIPS = 3;
@@ -23,6 +30,10 @@ public class Game {
 
     private ArrayList<Ship> boardLeft;
     private ArrayList<Ship> boardRight;
+
+    //no comment...
+    private boolean[][] lastSankShipLeft;
+    private boolean[][] lastSankShipRight;
 
     public Game(){
         pointsLeft  = 0;
@@ -140,8 +151,13 @@ public class Game {
         }
     }
 
+    public void start(){
+        pointsLeft  = 0;
+        pointsRight = 0;
+        currentPlayer = Player.HUMAN;
+    }
+
     /**
-     * @param board - 0 left, 1 right
      * @param board - 0 left, 1 right
      */
     public void eraseBoard(Boolean board){
@@ -158,21 +174,72 @@ public class Game {
      * @param col
      * @return
      */
-    public Boolean makeTurn(Boolean board, Integer row, Integer col){
+    public int makeTurn(Boolean board, Integer row, Integer col){
         if(board){
             for(Ship ship : boardRight){
                 if(ship.isHit(row, col)){
                     pointsLeft++;
-                    return true;
+                    if(currentPlayer==Player.HUMAN) currentPlayer=Player.AI;
+                    else currentPlayer=currentPlayer.HUMAN;
+                    if(ship.isSank()){
+                        lastSankShipRight = ship.getShipOriginal();
+                        return 2;
+                    } else {
+                        return 1;
+                    }
                 }
             }
         } else {
             for(Ship ship : boardLeft){
                 if(ship.isHit(row, col)){
                     pointsRight++;
-                    return true;
+                    if(currentPlayer==Player.HUMAN) currentPlayer=Player.AI;
+                    else currentPlayer=currentPlayer.HUMAN;
+                    if(ship.isSank()){
+                        lastSankShipLeft = ship.getShipOriginal();
+                        return 2;
+                    } else {
+                        return 1;
+                    }
                 }
             }
+        }
+        if(currentPlayer==Player.HUMAN) currentPlayer=Player.AI;
+        else currentPlayer=currentPlayer.HUMAN;
+        return 0;
+    }
+
+    public Effect getEffect(Coords shot){
+        int hit = makeTurn(currentPlayer==Player.HUMAN ? false : true, shot.x, shot.y);
+        switch (hit){
+            case 2:
+                return Effect.SANK;
+            case 1:
+                return Effect.HIT;
+            default:
+                return Effect.MISSED;
+        }
+    }
+
+    public List<Coords> getShipArray(){
+        boolean[][] lastSankShip = currentPlayer==Player.AI ? lastSankShipLeft : lastSankShipRight;
+        List<Coords> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if(lastSankShip[i][j] == true){
+                    list.add(new Coords(i, j));
+                }
+            }
+        }
+        return list;
+    }
+
+    public Boolean isGameOver(){
+        if(isGameOver(false)){
+            return true;
+        }
+        if(isGameOver(true)){
+            return true;
         }
         return false;
     }
@@ -269,7 +336,7 @@ public class Game {
                 }
             }
 
-         //   System.out.println("Ustawiono statkow: " + shipsSet);
+            System.out.println("Ustawiono statkow: " + shipsSet);
 
             if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DUOBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
                 for(Ship s: boardLeft){
@@ -281,5 +348,17 @@ public class Game {
             }
         }
         return randomBoard;
+    }
+
+    public ArrayList<Ship> getBoardLeft() {
+        return boardLeft;
+    }
+
+    public ArrayList<Ship> getBoardRight() {
+        return boardRight;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 }

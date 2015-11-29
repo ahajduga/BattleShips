@@ -136,4 +136,12 @@ public class Ship {
         }
         return board;
     }
+
+    public boolean[][] getShipOriginal() {
+        return shipOriginal;
+    }
+
+    public boolean[][] getShip() {
+        return ship;
+    }
 }

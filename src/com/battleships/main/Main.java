@@ -6,10 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-enum Player {
-    HUMAN, AI
-};
-
 public class Main extends Application {
     //TODO pobieranie ilosci poszczegolnych statkow z funkcji i wypelnianie labeli
     //TODO po wybraniu typu statku i kliknieciu w cell pojawia sie shadow
