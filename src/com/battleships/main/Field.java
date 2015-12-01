@@ -13,6 +13,16 @@ public class Field extends Rectangle{
 
     private Coords coords;
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        setFill(color);
+        this.color = color;
+    }
+
+    private Color color;
     public Coords getCoords() {
         return coords;
     }
@@ -21,5 +31,6 @@ public class Field extends Rectangle{
         super(size,size);
         super.setFill(color);
         this.coords = coords;
+        this.color = color;
     }
 }

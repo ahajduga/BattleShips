@@ -48,6 +48,7 @@ public class Controller implements Initializable {
     private Direction currDir;
     private State currentState = State.PLACING;
     private Field currentShot = null;
+
     private void initShipMap() {
         shipMap.put(mast1Field, 1);
         shipMap.put(mast2Field, 2);
@@ -102,27 +103,17 @@ public class Controller implements Initializable {
         if (mast3Left == 0) mast3Field.setDisable(true);
         mast4Field.setText("4m, Left: " + mast4Left);
         if (mast4Left == 0) mast4Field.setDisable(true);
-        if (mast1Left + mast2Left + mast3Left + mast4Left == 0) {
+        if (mast1Left + mast2Left + mast3Left + mast4Left != 0) { //TODO ==
             startButton.setDisable(false);
             startButton.setOnMouseClicked(event -> {
+                currentState = State.SHOOTING;
+                mast1Field.setDisable(true);
+                mast2Field.setDisable(true);
+                mast3Field.setDisable(true);
+                mast4Field.setDisable(true);
+                System.out.println("started");
                 gameInstance.start();
-                while (!gameInstance.isGameOver()) {
-                    if (gameInstance.getCurrentPlayer() == Player.HUMAN) {
-                        while(currentShot == null) continue;
-                        if (gameInstance.canShoot(currentShot.getCoords())) {
-                            if (gameInstance.getEffect(currentShot.getCoords()) == Effect.MISSED) {
-                                return;
-                            } else if (gameInstance.getEffect(currentShot.getCoords()) == Effect.HIT) {
-                                field.setFill(HIGHLIGHT_COLOR);
 
-                            } else {
-                                sink(gameInstance.getShipArray());
-                            }
-                        }
-                    } else {
-
-                    }
-                }
             });
         }
     }
@@ -156,6 +147,7 @@ public class Controller implements Initializable {
     private void fillShadows() {
         for (Field f : shadows) {
             f.setFill(FILL_COLOR);
+            f.setColor(FILL_COLOR);
         }
         shadows.clear();
     }
@@ -163,6 +155,7 @@ public class Controller implements Initializable {
     private void clearShadows() {
         for (Field f : shadows) {
             f.setFill(INIT_FIELD_COLOR);
+            f.setColor(INIT_FIELD_COLOR);
         }
         shadows.clear();
     }
@@ -170,13 +163,14 @@ public class Controller implements Initializable {
     private void drawShadows() {
         for (Field f : shadows) {
             f.setFill(HIGHLIGHT_COLOR);
+            f.setColor(HIGHLIGHT_COLOR);
         }
     }
 
     private boolean areBoundsValid(int mast, Field field, Direction currDir) {
 
-        int x = field.getxCell();
-        int y = field.getyCell();
+        int x = field.getCoords().x;
+        int y = field.getCoords().y;
         for (int i = 1; i < mast; i++) {
             if (currDir == Direction.UP) {
                 if (y - i < 0) return false;
@@ -214,8 +208,8 @@ public class Controller implements Initializable {
     private Direction getDirection(MouseEvent event) {
         double mouseX = event.getX();
         double mouseY = event.getY();
-        double fieldX = currentField.getxCell() * CELL_SIZE + CELL_SIZE / 2;
-        double fieldY = currentField.getyCell() * CELL_SIZE + CELL_SIZE / 2;
+        double fieldX = currentField.getCoords().x * CELL_SIZE + CELL_SIZE / 2;
+        double fieldY = currentField.getCoords().y * CELL_SIZE + CELL_SIZE / 2;
         if (Math.abs(mouseX - fieldX) > Math.abs(mouseY - fieldY)) {
             return mouseX - fieldX > 0 ? Direction.RIGHT : Direction.LEFT;
         } else {
@@ -233,12 +227,22 @@ public class Controller implements Initializable {
     }
 
     private void handleEnemyBoardClick(Field field) {
-        currentShot = field;
+        if (gameInstance.getCurrentPlayer() != Player.HUMAN) return;
+        if (field.getColor() != INIT_FIELD_COLOR) return;
+        if (gameInstance.getEffect(field.getCoords()) == Effect.MISSED) {
+            field.setColor(MISSED_COLOR);
+        } else if (gameInstance.getEffect(field.getCoords()) == Effect.HIT) {
+            field.setColor(HIGHLIGHT_COLOR);
+        } else {
+            sink(gameInstance.getShipArray());
+        }
 
     }
-    private void sink(List<Coords> coords){
-        for(Coords c : coords){
-            getField(c.y,c.x).setFill(FILL_COLOR);
+
+
+    private void sink(List<Coords> coords) {
+        for (Coords c : coords) {
+            getField(c.y, c.x).setFill(FILL_COLOR);
         }
     }
 
