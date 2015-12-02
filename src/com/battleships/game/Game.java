@@ -7,6 +7,7 @@ import com.battleships.utils.Coords;
 import com.battleships.utils.Direction;
 import com.battleships.utils.Effect;
 import com.battleships.utils.Player;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -292,17 +293,21 @@ public class Game {
 
     public static void main(String[] args) {
         Game g = new Game();
-        boolean[][] randomBoard = g.getRandomBoard();
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                if (randomBoard[i][j] == true) {
-                    System.out.print("#");
-                } else {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("");
-        }
+//        boolean[][] randomBoard = g.getRandomBoard();
+//        for (int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 10; j++) {
+//                if (randomBoard[i][j] == true) {
+//                    System.out.print("#");
+//                } else {
+//                    System.out.print(".");
+//                }
+//            }
+//            System.out.println("");
+//        }
+
+        g.start();
+
+        g.printBoard(false);
     }
 
     public boolean[][] getRandomBoard() {
@@ -367,6 +372,41 @@ public class Game {
         return randomBoard;
     }
 
+    /**
+     * @param board - 0 left, 1 right
+     */
+    public int[][] printBoard(boolean board){
+
+        ArrayList<Ship> boardTmp = board ? boardLeft : boardRight;
+        int[][] boardPrint = new int[10][10];
+
+        for(int i=1; i<=boardTmp.size(); i++){
+
+            boolean[][] ship = boardTmp.get(i-1).getShipOriginal();
+
+            for(int j=0; j<10; j++){
+                for(int k=0; k<10; k++){
+                    if(ship[j][k]){
+                        boardPrint[j][k]=i;
+                    }
+                }
+            }
+        }
+
+        for(int j=0; j<10; j++){
+            for(int k=0; k<10; k++){
+                if(boardPrint[j][k]==0){
+                    System.out.print(".");
+                } else {
+                    System.out.print(boardPrint[j][k]);
+                }
+            }
+            System.out.println();
+        }
+
+        return boardPrint;
+    }
+
     public ArrayList<Ship> getBoardLeft() {
         return boardLeft;
     }
@@ -378,6 +418,4 @@ public class Game {
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-
-
 }
