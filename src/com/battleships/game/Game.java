@@ -161,7 +161,7 @@ public class Game {
         pointsLeft = 0;
         pointsRight = 0;
 
-        boardRight = AI.placeShipsFromFactors();
+        boardRight = AI.placeShipsFromFactors();printBoard(false);
 
         currentPlayer = Player.HUMAN;
     }

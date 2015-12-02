@@ -82,11 +82,20 @@ public class Ship {
     }
 
     public Boolean isSank(){
-        if(!Arrays.asList(ship).contains(true)){
-            return true;
-        } else {
-            return false;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if(ship[i][j] == true){
+                    return false;
+                }
+            }
         }
+        return true;
+
+//        if(Arrays.asList(ship).contains(true)){
+//            return false;
+//        } else {
+//            return true;
+//        }
     }
 
     public Boolean isCollision(Ship ship){
