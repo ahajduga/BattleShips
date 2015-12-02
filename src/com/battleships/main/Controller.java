@@ -23,6 +23,7 @@ public class Controller implements Initializable {
     private static final Color INIT_FIELD_COLOR = Color.BLACK;
     private static final Color MISSED_COLOR = Color.LIGHTGRAY;
     private static final Color PLAYER_HIT_COLOR = HIGHLIGHT_COLOR;
+    private static final Color AI_HIT_COLOR = Color.PURPLE;
     private static final Color PLAYER_SANK_COLOR = FILL_COLOR;
     private static final int CELL_SIZE = 25;
     @FXML
@@ -231,6 +232,12 @@ public class Controller implements Initializable {
         if (field.getColor() != INIT_FIELD_COLOR) return;
         if (gameInstance.getEffect(field.getCoords()) == Effect.MISSED) {
             field.setColor(MISSED_COLOR);
+            List<Coords> coords = gameInstance.getAIMove();
+            for(Coords c : coords){
+                if(getField(c.y,c.x).getColor()==FILL_COLOR)
+                    getField(c.y,c.x).setColor(AI_HIT_COLOR);
+                else getField(c.y,c.x).setColor(MISSED_COLOR);
+            }
         } else if (gameInstance.getEffect(field.getCoords()) == Effect.HIT) {
             field.setColor(HIGHLIGHT_COLOR);
         } else {
