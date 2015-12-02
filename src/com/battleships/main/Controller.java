@@ -136,7 +136,7 @@ public class Controller implements Initializable {
 
             updateFields();
             if (areBoundsValid(shipMap.get(currentLabel), field, currDir)) {
-                if (gameInstance.isPlacementPossible(true, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir.ordinal())) {
+                if (gameInstance.isPlacementPossible(true, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir)) {
                     drawShadows();
                 } else shadows.clear();
             }
@@ -261,7 +261,7 @@ public class Controller implements Initializable {
             if (gameInstance.isPlaceAndSurrFree(true, field.getCoords().y, field.getCoords().x)) {
                 currentField = field;
                 if (shipMap.get(currentLabel) == 1) {
-                    gameInstance.setNewShipInGame(true, 1, currentField.getCoords().y, currentField.getCoords().x, Direction.DOWN.ordinal());
+                    gameInstance.setNewShipInGame(true, 1, currentField.getCoords().y, currentField.getCoords().x, Direction.DOWN);
                     clearSelection();
 
                 } else
@@ -270,7 +270,7 @@ public class Controller implements Initializable {
         } else {
             if (shadows.size() != 0) {
                 currentField.setFill(Color.RED);
-                gameInstance.setNewShipInGame(true, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir.ordinal());
+                gameInstance.setNewShipInGame(true, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir);
                 clearSelection();
                 fillShadows();
 

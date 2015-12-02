@@ -2,6 +2,8 @@ package com.battleships.game;
 
 import java.util.Arrays;
 
+import com.battleships.utils.Direction;
+
 /**
  * Created by alex on 18.10.15.
  */
@@ -26,10 +28,10 @@ public class Ship {
         this.shipOriginal = ship;
     }
 
-    public boolean setShip(Boolean board, Integer length, Integer row, Integer col, Integer direction){
+    public boolean setShip(Integer length, Integer row, Integer col, Direction direction){
 
         switch (direction){
-            case 0:
+            case LEFT:
                 for (int i=0; i<length; i++){
                     if(col-i<0){
                         return false;
@@ -38,7 +40,7 @@ public class Ship {
                     shipOriginal[row][col-i] = true;
                 }
                 break;
-            case 1:
+            case UP:
                 for (int i=0; i<length; i++){
                     if(row-i<0){
                         return false;
@@ -47,7 +49,7 @@ public class Ship {
                     shipOriginal[row-i][col] = true;
                 }
                 break;
-            case 2:
+            case RIGHT:
                 for (int i=0; i<length; i++){
                     if(col+i>=BOARD_SIZE){
                         return false;
@@ -56,7 +58,7 @@ public class Ship {
                     shipOriginal[row][col+i] = true;
                 }
                 break;
-            case 3:
+            case DOWN:
                 for (int i=0; i<length; i++){
                     if(row+i>=BOARD_SIZE){
                         return false;
