@@ -104,7 +104,7 @@ public class Controller implements Initializable {
         if (mast3Left == 0) mast3Field.setDisable(true);
         mast4Field.setText("4m, Left: " + mast4Left);
         if (mast4Left == 0) mast4Field.setDisable(true);
-        if (mast1Left + mast2Left + mast3Left + mast4Left != 0) { //TODO ==
+        if (mast1Left + mast2Left + mast3Left + mast4Left != 0) { //TODO == !=
             startButton.setDisable(false);
             startButton.setOnMouseClicked(event -> {
                 currentState = State.SHOOTING;
