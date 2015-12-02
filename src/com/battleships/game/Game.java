@@ -229,6 +229,15 @@ public class Game {
         }
     }
 
+    public List<Coords> getAIMove(){
+        List<Coords> moves = new ArrayList<>();
+        Coords move = AI.makeRandomMove();
+        while(getEffect(move)!=Effect.MISSED){
+            moves.add(move);
+        }
+        return moves;
+    }
+
     public List<Coords> getShipArray() {
         boolean[][] lastSankShip = currentPlayer == Player.AI ? lastSankShipLeft : lastSankShipRight;
         List<Coords> list = new ArrayList<>();

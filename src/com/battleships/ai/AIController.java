@@ -7,6 +7,7 @@ import com.battleships.utils.Direction;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 /**
@@ -178,5 +179,9 @@ public class AIController {
             }
         }
         return true;
+    }
+
+    public Coords makeRandomMove(){
+        return new Coords(new SecureRandom().nextInt(10), new SecureRandom().nextInt(10));
     }
 }
