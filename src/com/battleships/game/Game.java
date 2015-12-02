@@ -188,8 +188,8 @@ public class Game {
             for (Ship ship : boardRight) {
                 if (ship.isHit(row, col)) {
                     pointsLeft++;
-                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-                    else currentPlayer = currentPlayer.HUMAN;
+//                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+//                    else currentPlayer = currentPlayer.HUMAN;
                     if (ship.isSank()) {
                         lastSankShipRight = ship.getShipOriginal();
                         return 2;
@@ -202,8 +202,8 @@ public class Game {
             for (Ship ship : boardLeft) {
                 if (ship.isHit(row, col)) {
                     pointsRight++;
-                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-                    else currentPlayer = currentPlayer.HUMAN;
+//                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+//                    else currentPlayer = currentPlayer.HUMAN;
                     if (ship.isSank()) {
                         lastSankShipLeft = ship.getShipOriginal();
                         return 2;
@@ -213,8 +213,8 @@ public class Game {
                 }
             }
         }
-        if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-        else currentPlayer = currentPlayer.HUMAN;
+//        if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+//        else currentPlayer = currentPlayer.HUMAN;
         return 0;
     }
 
@@ -226,6 +226,8 @@ public class Game {
             case 1:
                 return Effect.HIT;
             default:
+                if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+                else currentPlayer = currentPlayer.HUMAN;
                 return Effect.MISSED;
         }
     }
@@ -234,7 +236,7 @@ public class Game {
         List<Coords> moves = new ArrayList<>();
         Coords move = AI.makeRandomMove();
         while(true){
-            if(getEffect(move)!=Effect.MISSED){
+            if(getEffect(move)==Effect.MISSED){
                 moves.add(move);
                 break;
             } else {
