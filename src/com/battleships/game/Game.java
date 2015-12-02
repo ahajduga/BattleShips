@@ -1,13 +1,7 @@
 package com.battleships.game;
 
-//import com.sun.xml.internal.xsom.impl.scd.Iterators;
-
 import com.battleships.ai.AIController;
-import com.battleships.utils.Coords;
-import com.battleships.utils.Direction;
-import com.battleships.utils.Effect;
-import com.battleships.utils.Player;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.battleships.utils.*;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -34,7 +28,6 @@ public class Game {
     private ArrayList<Ship> boardLeft;
     private ArrayList<Ship> boardRight;
 
-    //no comment...
     private boolean[][] lastSankShipLeft;
     private boolean[][] lastSankShipRight;
 
@@ -48,21 +41,20 @@ public class Game {
         AI = new AIController();
     }
 
-    /**
-     * @param board     - 0 left, 1 right
-     * @param length
-     * @param row
-     * @param col
-     * @param direction - 0 left, 1 up, 2 right, 3 down
-     * @return
-     */
-    public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Direction direction) {
+    public Boolean isPlacementPossible(
+            Board board,
+            Integer length,
+            Integer row,
+            Integer col,
+            Direction direction
+    ) {
+        System.out.println(row + " " + col + " " + direction);
         Ship ship = new Ship(length);
         if (!ship.setShip(length, row, col, direction)) {
             return false;
         }
 
-        if (board) {
+        if (board==Board.RIGHT) {
             for (Ship s : boardRight) {
                 if (s.isCollision(ship)) {
                     return false;
@@ -81,7 +73,7 @@ public class Game {
     }
 
     public boolean setNewShipInGame(
-            Boolean board,
+            Board board,
             Integer length,
             Integer row,
             Integer col,
@@ -90,7 +82,7 @@ public class Game {
         if (isPlacementPossible(board, length, row, col, direction)) {
             Ship ship = new Ship(length);
             ship.setShip(length, row, col, direction);
-            if (board)
+            if (board==Board.RIGHT)
                 boardRight.add(ship);
             else
                 boardLeft.add(ship);
@@ -100,12 +92,7 @@ public class Game {
         }
     }
 
-    /**
-     * @param board     - 0 left, 1 right
-     * @param mastCount
-     * @return
-     */
-    public Integer getRemainingShipsCount(Boolean board, Integer mastCount) {
+    public Integer getRemainingShipsCount(Board board, Integer mastCount) {
 
         int defaultShipCount = 0;
 
@@ -124,7 +111,7 @@ public class Game {
                 break;
         }
 
-        if (board) {
+        if (board==Board.RIGHT) {
             return defaultShipCount - (int) boardRight.stream()
                     .filter((ship) -> ship.getMastCount() == mastCount).count();
         } else {
@@ -133,14 +120,8 @@ public class Game {
         }
     }
 
-    /**
-     * @param board - 0 left, 1 right
-     * @param row
-     * @param col
-     * @return
-     */
-    public Boolean isPlaceAndSurrFree(Boolean board, Integer row, Integer col) {
-        if (board) {
+    public Boolean isPlaceAndSurrFree(Board board, Integer row, Integer col) {
+        if (board==Board.LEFT) {
             for (Ship s : boardLeft) {
                 if (!s.isPlaceAndSurrFree(row, col)) {
                     return false;
@@ -161,35 +142,24 @@ public class Game {
         pointsLeft = 0;
         pointsRight = 0;
 
-        boardRight = AI.placeShipsFromFactors();printBoard(false);
+        boardRight = AI.placeShipsFromFactors();printBoard(Board.RIGHT);
 
         currentPlayer = Player.HUMAN;
     }
 
-    /**
-     * @param board - 0 left, 1 right
-     */
-    public void eraseBoard(Boolean board) {
-        if (board) {
+    public void eraseBoard(Board board) {
+        if (board==Board.LEFT) {
             boardLeft.clear();
         } else {
             boardRight.clear();
         }
     }
 
-    /**
-     * @param board - 0 left, 1 right
-     * @param row
-     * @param col
-     * @return
-     */
-    public int makeTurn(Boolean board, Integer row, Integer col) {
-        if (board) {
+    public int makeTurn(Board board, Integer row, Integer col) {
+        if (board==Board.RIGHT) {
             for (Ship ship : boardRight) {
                 if (ship.isHit(row, col)) {
                     pointsLeft++;
-//                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-//                    else currentPlayer = currentPlayer.HUMAN;
                     if (ship.isSank()) {
                         lastSankShipRight = ship.getShipOriginal();
                         return 2;
@@ -202,8 +172,6 @@ public class Game {
             for (Ship ship : boardLeft) {
                 if (ship.isHit(row, col)) {
                     pointsRight++;
-//                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-//                    else currentPlayer = currentPlayer.HUMAN;
                     if (ship.isSank()) {
                         lastSankShipLeft = ship.getShipOriginal();
                         return 2;
@@ -213,21 +181,19 @@ public class Game {
                 }
             }
         }
-    //    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-    //    else currentPlayer = currentPlayer.HUMAN;
         return 0;
     }
 
     public Effect getEffect(Coords shot) {
-        int hit = makeTurn(currentPlayer == Player.HUMAN ? true : false, shot.x, shot.y);
+        int hit = makeTurn(currentPlayer == Player.HUMAN ? Board.RIGHT : Board.LEFT, shot.x, shot.y);
         switch (hit) {
             case 2:
                 return Effect.SANK;
             case 1:
                 return Effect.HIT;
             default:
-            if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-                   else currentPlayer = currentPlayer.HUMAN;
+                if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+                else currentPlayer = currentPlayer.HUMAN;
                 return Effect.MISSED;
         }
     }
@@ -263,21 +229,17 @@ public class Game {
     }
 
     public Boolean isGameOver() {
-        if (isGameOver(false)) {
+        if (isGameOver(Board.LEFT)) {
             return true;
         }
-        if (isGameOver(true)) {
+        if (isGameOver(Board.RIGHT)) {
             return true;
         }
         return false;
     }
 
-    /**
-     * @param board - 0 left, 1 right
-     * @return
-     */
-    public Boolean isGameOver(Boolean board) {
-        if (board) {
+    public Boolean isGameOver(Board board) {
+        if (board == Board.RIGHT) {
             for (Ship ship : boardRight) {
                 if (!ship.isSank()) {
                     return false;
@@ -317,77 +279,74 @@ public class Game {
 
         g.start();
 
-        g.printBoard(false);
+        g.printBoard(Board.RIGHT);
     }
 
     public boolean[][] getRandomBoard() {
 
         boolean[][] randomBoard = new boolean[10][10];
 
-//        while (true) {
-//
-//            int shipsSet = 0;
-//
-//            for (int i = 0; i < QUAD_MAST_SHIPS; i++) {
-//                if (setNewShipInGame(false,
-//                        4,
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(10),
-//                        Direction.values(new SecureRandom().nextInt(4)))) {
-//                    shipsSet++;
-//                }
-//            }
-//
-//            for (int i = 0; i < TRIPLE_MAST_SHIPS; i++) {
-//                if (setNewShipInGame(false,
-//                        3,
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(4))) {
-//                    shipsSet++;
-//                }
-//            }
-//
-//            for (int i = 0; i < DUOBLE_MAST_SHIPS; i++) {
-//                if (setNewShipInGame(false,
-//                        2,
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(4))) {
-//                    shipsSet++;
-//                }
-//            }
-//
-//            for (int i = 0; i < SINGLE_MAST_SHIPS; i++) {
-//                if (setNewShipInGame(false,
-//                        1,
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(10),
-//                        new SecureRandom().nextInt(4))) {
-//                    shipsSet++;
-//                }
-//            }
-//
-//            System.out.println("Ustawiono statkow: " + shipsSet);
-//
-//            if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DUOBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
-//                for (Ship s : boardLeft) {
-//                    randomBoard = s.setOnRandomBoard(randomBoard);
-//                }
-//                break;
-//            } else {
-//                boardLeft.clear();
-//            }
-//        }
+        while (true) {
+
+            int shipsSet = 0;
+
+            for (int i = 0; i < QUAD_MAST_SHIPS; i++) {
+                if (setNewShipInGame(Board.RIGHT,
+                        4,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        Direction.values()[new SecureRandom().nextInt(4)])) {
+                    shipsSet++;
+                }
+            }
+
+            for (int i = 0; i < TRIPLE_MAST_SHIPS; i++) {
+                if (setNewShipInGame(Board.RIGHT,
+                        3,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        Direction.values()[new SecureRandom().nextInt(4)])) {
+                    shipsSet++;
+                }
+            }
+
+            for (int i = 0; i < DUOBLE_MAST_SHIPS; i++) {
+                if (setNewShipInGame(Board.RIGHT,
+                        2,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        Direction.values()[new SecureRandom().nextInt(4)])) {
+                    shipsSet++;
+                }
+            }
+
+            for (int i = 0; i < SINGLE_MAST_SHIPS; i++) {
+                if (setNewShipInGame(Board.RIGHT,
+                        1,
+                        new SecureRandom().nextInt(10),
+                        new SecureRandom().nextInt(10),
+                        Direction.values()[new SecureRandom().nextInt(4)])) {
+                    shipsSet++;
+                }
+            }
+
+            System.out.println("Ustawiono statkow: " + shipsSet);
+
+            if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DUOBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
+                for (Ship s : boardLeft) {
+                    randomBoard = s.setOnRandomBoard(randomBoard);
+                }
+                break;
+            } else {
+                boardLeft.clear();
+            }
+        }
         return randomBoard;
     }
 
-    /**
-     * @param board - 0 left, 1 right
-     */
-    public int[][] printBoard(boolean board){
+    public int[][] printBoard(Board board){
 
-        ArrayList<Ship> boardTmp = board ? boardLeft : boardRight;
+        ArrayList<Ship> boardTmp = board==Board.LEFT ? boardLeft : boardRight;
         int[][] boardPrint = new int[10][10];
 
         for(int i=1; i<=boardTmp.size(); i++){

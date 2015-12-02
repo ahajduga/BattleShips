@@ -80,10 +80,10 @@ public class Controller implements Initializable {
     }
 
     private void initFields() {
-        int mast1Left = gameInstance.getRemainingShipsCount(false, 1);
-        int mast2Left = gameInstance.getRemainingShipsCount(false, 2);
-        int mast3Left = gameInstance.getRemainingShipsCount(false, 3);
-        int mast4Left = gameInstance.getRemainingShipsCount(false, 4);
+        int mast1Left = gameInstance.getRemainingShipsCount(Board.LEFT, 1);
+        int mast2Left = gameInstance.getRemainingShipsCount(Board.LEFT, 2);
+        int mast3Left = gameInstance.getRemainingShipsCount(Board.LEFT, 3);
+        int mast4Left = gameInstance.getRemainingShipsCount(Board.LEFT, 4);
         mast1Field.setText("1m, Left: " + mast1Left);
         mast2Field.setText("2m, Left: " + mast2Left);
         mast3Field.setText("3m, Left: " + mast3Left);
@@ -91,10 +91,10 @@ public class Controller implements Initializable {
     }
 
     private void updateFields() {
-        int mast1Left = gameInstance.getRemainingShipsCount(false, 1);
-        int mast2Left = gameInstance.getRemainingShipsCount(false, 2);
-        int mast3Left = gameInstance.getRemainingShipsCount(false, 3);
-        int mast4Left = gameInstance.getRemainingShipsCount(false, 4);
+        int mast1Left = gameInstance.getRemainingShipsCount(Board.LEFT, 1);
+        int mast2Left = gameInstance.getRemainingShipsCount(Board.LEFT, 2);
+        int mast3Left = gameInstance.getRemainingShipsCount(Board.LEFT, 3);
+        int mast4Left = gameInstance.getRemainingShipsCount(Board.LEFT, 4);
 
         mast1Field.setText("1m, Left: " + mast1Left);
         if (mast1Left == 0) mast1Field.setDisable(true);
@@ -136,7 +136,7 @@ public class Controller implements Initializable {
 
             updateFields();
             if (areBoundsValid(shipMap.get(currentLabel), field, currDir)) {
-                if (gameInstance.isPlacementPossible(false, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir)) {
+                if (gameInstance.isPlacementPossible(Board.LEFT, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir)) {
                     drawShadows();
                 } else shadows.clear();
             }
@@ -274,10 +274,10 @@ public class Controller implements Initializable {
             return;
         if (currentField == null) {
 
-            if (gameInstance.isPlaceAndSurrFree(false, field.getCoords().y, field.getCoords().x)) {
+            if (gameInstance.isPlaceAndSurrFree(Board.LEFT, field.getCoords().y, field.getCoords().x)) {
                 currentField = field;
                 if (shipMap.get(currentLabel) == 1) {
-                    gameInstance.setNewShipInGame(false, 1, currentField.getCoords().y, currentField.getCoords().x, Direction.DOWN);
+                    gameInstance.setNewShipInGame(Board.LEFT, 1, currentField.getCoords().y, currentField.getCoords().x, Direction.DOWN);
                     clearSelection();
 
                 } else
@@ -286,7 +286,7 @@ public class Controller implements Initializable {
         } else {
             if (shadows.size() != 0) {
                 currentField.setFill(Color.RED);
-                gameInstance.setNewShipInGame(false, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir);
+                gameInstance.setNewShipInGame(Board.LEFT, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir);
                 clearSelection();
                 fillShadows();
 

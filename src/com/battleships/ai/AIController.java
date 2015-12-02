@@ -107,16 +107,16 @@ int x=0, y = 0;
     private void place(boolean[][] result, int mast, int x, int y, Direction dir){
         for(int i=0;i<mast;i++){
             switch(dir){
-                case DOWN:
+                case RIGHT:
                     result[x][y+i] = true;
                     break;
-                case UP:
+                case LEFT:
                     result[x][y-i] = true;
                     break;
-                case LEFT:
+                case UP:
                     result[x-i][y] = true;
                     break;
-                case RIGHT:
+                case DOWN:
                     result[x+i][y] = true;
                     break;
             }
@@ -129,16 +129,16 @@ int x=0, y = 0;
         int sum = 0;
         for(int i=0;i<mast;i++){
             switch(dir){
-                case DOWN:
+                case RIGHT:
                     sum+= factors[x][y+i];
                     break;
-                case UP:
+                case LEFT:
                     sum+= factors[x][y-i];
                     break;
-                case LEFT:
+                case UP:
                     sum+= factors[x-i][y];
                     break;
-                case RIGHT:
+                case DOWN:
                     sum+= factors[x+i][y];
                     break;
             }

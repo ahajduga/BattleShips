@@ -32,7 +32,7 @@ public class Ship {
     public boolean setShip(Integer length, Integer row, Integer col, Direction direction){
 
         switch (direction){
-            case UP:
+            case LEFT:
                 for (int i=0; i<length; i++){
                     if(col-i<0){
                         return false;
@@ -41,7 +41,7 @@ public class Ship {
                     shipOriginal[row][col-i] = true;
                 }
                 break;
-            case LEFT:
+            case UP:
                 for (int i=0; i<length; i++){
                     if(row-i<0){
                         return false;
@@ -50,7 +50,7 @@ public class Ship {
                     shipOriginal[row-i][col] = true;
                 }
                 break;
-            case DOWN:
+            case RIGHT:
                 for (int i=0; i<length; i++){
                     if(col+i>=BOARD_SIZE){
                         return false;
@@ -59,7 +59,7 @@ public class Ship {
                     shipOriginal[row][col+i] = true;
                 }
                 break;
-            case RIGHT:
+            case DOWN:
                 for (int i=0; i<length; i++){
                     if(row+i>=BOARD_SIZE){
                         return false;
