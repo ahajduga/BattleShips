@@ -39,7 +39,7 @@ public class PlacementArrayGenerator {
     }
 
 
-    private static void save(int[][] values, String filePath) {
+    public static void save(int[][] values, String filePath) {
         try (PrintWriter writer = new PrintWriter(filePath)) {
 
             for (int i = 0; i < 10; i++) {
