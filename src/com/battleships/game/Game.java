@@ -126,10 +126,10 @@ public class Game {
         }
 
         if (board) {
-            return defaultShipCount - (int) boardLeft.stream()
+            return defaultShipCount - (int) boardRight.stream()
                     .filter((ship) -> ship.getMastCount() == mastCount).count();
         } else {
-            return defaultShipCount - (int) boardRight.stream()
+            return defaultShipCount - (int) boardLeft.stream()
                     .filter((ship) -> ship.getMastCount() == mastCount).count();
         }
     }
