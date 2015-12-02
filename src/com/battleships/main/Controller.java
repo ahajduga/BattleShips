@@ -228,9 +228,9 @@ public class Controller implements Initializable {
     }
 
     private void handleEnemyBoardClick(Field field) {
-        if (gameInstance.getCurrentPlayer() != Player.HUMAN) return;
+//        if (gameInstance.getCurrentPlayer() != Player.HUMAN) return;
         if (field.getColor() != INIT_FIELD_COLOR) return;
-        if (gameInstance.getEffect(field.getCoords()) == Effect.MISSED) {
+        if (gameInstance.getEffect(field.getCoords()) == Effect.MISSED) {System.out.println("miss");
             field.setColor(MISSED_COLOR);
             List<Coords> coords = gameInstance.getAIMove();
             for(Coords c : coords){
@@ -238,9 +238,9 @@ public class Controller implements Initializable {
                     getField(c.y,c.x).setColor(AI_HIT_COLOR);
                 else getField(c.y,c.x).setColor(MISSED_COLOR);
             }
-        } else if (gameInstance.getEffect(field.getCoords()) == Effect.HIT) {
+        } else if (gameInstance.getEffect(field.getCoords()) == Effect.HIT) {System.out.println("hit");
             field.setColor(HIGHLIGHT_COLOR);
-        } else {
+        } else {System.out.println("sank");
             sink(gameInstance.getShipArray());
         }
 

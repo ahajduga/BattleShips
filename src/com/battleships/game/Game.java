@@ -161,7 +161,7 @@ public class Game {
         pointsLeft = 0;
         pointsRight = 0;
 
-        boardRight = AI.placeShipsFromFactors();
+        boardRight = AI.placeShipsFromFactors();printBoard(false);
 
         currentPlayer = Player.HUMAN;
     }
@@ -219,7 +219,7 @@ public class Game {
     }
 
     public Effect getEffect(Coords shot) {
-        int hit = makeTurn(currentPlayer == Player.HUMAN ? false : true, shot.x, shot.y);
+        int hit = makeTurn(currentPlayer == Player.HUMAN ? true : false, shot.x, shot.y);
         switch (hit) {
             case 2:
                 return Effect.SANK;
