@@ -204,7 +204,18 @@ public class Controller implements Initializable {
         }
         return (Field) result;
     }
-
+    private Field getEnemyField(int y, int x) {
+        Node result = null;
+        ObservableList<Node> childrens = boardRight.getChildren();
+        for (Node node : childrens) {
+            if (GridPane.getRowIndex(node) == null || GridPane.getColumnIndex(node) == null) continue;
+            if (boardRight.getRowIndex(node) == x && boardRight.getColumnIndex(node) == y) {
+                result = node;
+                break;
+            }
+        }
+        return (Field) result;
+    }
 
     private Direction getDirection(MouseEvent event) {
         double mouseX = event.getX();
@@ -230,7 +241,8 @@ public class Controller implements Initializable {
     private void handleEnemyBoardClick(Field field) {
      //   if (gameInstance.getCurrentPlayer() != Player.HUMAN) return;
         if (field.getColor() != INIT_FIELD_COLOR) return;
-        if (gameInstance.getEffect(field.getCoords()) == Effect.MISSED) {
+        Effect effect = gameInstance.getEffect(field.getCoords());
+        if (effect == Effect.MISSED) {
             System.out.println("missed");
             field.setColor(MISSED_COLOR);
             List<Coords> coords = gameInstance.getAIMove();
@@ -239,10 +251,11 @@ public class Controller implements Initializable {
                     getField(c.y,c.x).setColor(AI_HIT_COLOR);
                 else getField(c.y,c.x).setColor(MISSED_COLOR);
             }
-        } else if (gameInstance.getEffect(field.getCoords()) == Effect.HIT) {
+
+        } else if (effect == Effect.HIT) {
             System.out.println("hit");
             field.setColor(HIGHLIGHT_COLOR);
-        } else {
+        } else if (effect == Effect.SANK){
             System.out.println("sink");
             sink(gameInstance.getShipArray());
         }
@@ -252,7 +265,7 @@ public class Controller implements Initializable {
 
     private void sink(List<Coords> coords) {
         for (Coords c : coords) {
-            getField(c.y, c.x).setFill(FILL_COLOR);
+            getEnemyField(c.y, c.x).setFill(FILL_COLOR);
         }
     }
 

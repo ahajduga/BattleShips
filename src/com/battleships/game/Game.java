@@ -7,9 +7,7 @@ import com.battleships.utils.Coords;
 import com.battleships.utils.Direction;
 import com.battleships.utils.Effect;
 import com.battleships.utils.Player;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,7 +159,8 @@ public class Game {
         pointsLeft = 0;
         pointsRight = 0;
 
-        boardRight = AI.placeShipsFromFactors();printBoard(false);
+        boardRight = AI.placeShipsFromFactors();
+        printBoard(false);
 
         currentPlayer = Player.HUMAN;
     }
@@ -188,8 +187,8 @@ public class Game {
             for (Ship ship : boardRight) {
                 if (ship.isHit(row, col)) {
                     pointsLeft++;
-                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-                    else currentPlayer = currentPlayer.HUMAN;
+                    //          if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+                    //          else currentPlayer = currentPlayer.HUMAN;
                     if (ship.isSank()) {
                         lastSankShipRight = ship.getShipOriginal();
                         return 2;
@@ -202,8 +201,8 @@ public class Game {
             for (Ship ship : boardLeft) {
                 if (ship.isHit(row, col)) {
                     pointsRight++;
-                    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-                    else currentPlayer = currentPlayer.HUMAN;
+                    //           if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+                    //           else currentPlayer = currentPlayer.HUMAN;
                     if (ship.isSank()) {
                         lastSankShipLeft = ship.getShipOriginal();
                         return 2;
@@ -223,17 +222,20 @@ public class Game {
         switch (hit) {
             case 2:
                 return Effect.SANK;
+
             case 1:
                 return Effect.HIT;
             default:
+                if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+                else currentPlayer = currentPlayer.HUMAN;
                 return Effect.MISSED;
         }
     }
 
-    public List<Coords> getAIMove(){
+    public List<Coords> getAIMove() {
         List<Coords> moves = new ArrayList<>();
         Coords move = AI.makeRandomMove();
-        while(getEffect(move)!=Effect.MISSED){
+        while (getEffect(move) != Effect.MISSED) {
             moves.add(move);
         }
         return moves;
@@ -375,27 +377,27 @@ public class Game {
     /**
      * @param board - 0 left, 1 right
      */
-    public int[][] printBoard(boolean board){
+    public int[][] printBoard(boolean board) {
 
         ArrayList<Ship> boardTmp = board ? boardLeft : boardRight;
         int[][] boardPrint = new int[10][10];
 
-        for(int i=1; i<=boardTmp.size(); i++){
+        for (int i = 1; i <= boardTmp.size(); i++) {
 
-            boolean[][] ship = boardTmp.get(i-1).getShipOriginal();
+            boolean[][] ship = boardTmp.get(i - 1).getShipOriginal();
 
-            for(int j=0; j<10; j++){
-                for(int k=0; k<10; k++){
-                    if(ship[j][k]){
-                        boardPrint[j][k]=i;
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (ship[j][k]) {
+                        boardPrint[j][k] = i;
                     }
                 }
             }
         }
 
-        for(int j=0; j<10; j++){
-            for(int k=0; k<10; k++){
-                if(boardPrint[j][k]==0){
+        for (int j = 0; j < 10; j++) {
+            for (int k = 0; k < 10; k++) {
+                if (boardPrint[j][k] == 0) {
                     System.out.print(".");
                 } else {
                     System.out.print(boardPrint[j][k]);
