@@ -234,11 +234,12 @@ public class Game {
 
     public List<Coords> getAIMove(){
         List<Coords> moves = new ArrayList<>();
-        Coords move = null;
-        while((move = AI.makeRandomMove()) == null);
+
         while(true){
+            Coords move = null;
+            while((move = AI.makeRandomMove()) == null);
             Effect eff = getEffect(move);
-            if(getEffect(move)==Effect.MISSED){
+            if(eff==Effect.MISSED){
                 moves.add(move);
                 break;
             } else {
