@@ -59,7 +59,9 @@ public class AIController {
             int bestMatchedValue = Integer.MAX_VALUE;
             for (int x = 0; x < 10; x++) {
                 for (int y = 0; y < 10; y++) {
-                    if (canBePlaced(x, y, mast, result, Direction.DOWN)) {
+
+                    if (isPlacementPossible(mast, x, y, Direction.DOWN)) {
+//                    if (canBePlaced(x, y, mast, result, Direction.DOWN)) {
                         int currentValue = findValue(mast, x, y, Direction.DOWN);
                         if (currentValue < bestMatchedValue) {
                             bestMatchedValue = currentValue;
@@ -68,7 +70,8 @@ public class AIController {
                             bestY = y;
                         }
                     }
-                    if (canBePlaced(x, y, mast, result, Direction.UP)) {
+                    if (isPlacementPossible(mast, x, y, Direction.UP)) {
+//                    if (canBePlaced(x, y, mast, result, Direction.UP)) {
                         int currentValue = findValue(mast, x, y, Direction.UP);
                         if (currentValue < bestMatchedValue) {
                             bestMatchedValue = currentValue;
@@ -77,7 +80,8 @@ public class AIController {
                             bestY = y;
                         }
                     }
-                    if (canBePlaced(x, y, mast, result, Direction.LEFT)) {
+                    if (isPlacementPossible(mast, x, y, Direction.LEFT)) {
+//                    if (canBePlaced(x, y, mast, result, Direction.LEFT)) {
                         int currentValue = findValue(mast, x, y, Direction.LEFT);
                         if (currentValue < bestMatchedValue) {
                             bestMatchedValue = currentValue;
@@ -86,7 +90,8 @@ public class AIController {
                             bestY = y;
                         }
                     }
-                    if (canBePlaced(x, y, mast, result, Direction.RIGHT)) {
+                    if (isPlacementPossible(mast, x, y, Direction.RIGHT)) {
+//                    if (canBePlaced(x, y, mast, result, Direction.RIGHT)) {
                         int currentValue = findValue(mast, x, y, Direction.RIGHT);
                         if (currentValue < bestMatchedValue) {
                             bestMatchedValue = currentValue;
@@ -163,6 +168,20 @@ public class AIController {
                     if(x+i >=10) return false;
                     if (result[x + i][y]) return false;
                     break;
+            }
+        }
+        return true;
+    }
+
+    public Boolean isPlacementPossible(Integer length, Integer row, Integer col, Direction direction) {
+        Ship ship = new Ship(length);
+        if (!ship.setShip(length, row, col, direction)) {
+            return false;
+        }
+
+        for (Ship s : AIShips) {
+            if (s.isCollision(ship)) {
+                return false;
             }
         }
         return true;
