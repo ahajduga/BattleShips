@@ -48,7 +48,6 @@ public class Game {
             Integer col,
             Direction direction
     ) {
-        System.out.println(row + " " + col + " " + direction);
         Ship ship = new Ship(length);
         if (!ship.setShip(length, row, col, direction)) {
             return false;
