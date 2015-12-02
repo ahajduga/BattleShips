@@ -1,6 +1,7 @@
 package com.battleships.ai;
 
 import com.battleships.game.Ship;
+import com.battleships.placement.PlacementArrayGenerator;
 import com.battleships.utils.Coords;
 import com.battleships.utils.Direction;
 
@@ -22,32 +23,7 @@ public class AIController {
 
         factors = new int[10][10];
 
-        BufferedReader br = null;
-
-        try {
-            String sCurrentLine;
-
-            br = new BufferedReader(new FileReader("mc.txt"));
-
-            int line=0;
-            while ((sCurrentLine = br.readLine()) != null) {
-                String[] factor = sCurrentLine.split(" ");
-                for(int i=0; i<factor.length; i++){
-                    factors[line][i] = Integer.parseInt(factor[i]);
-                }
-                line++;
-//                System.out.println(sCurrentLine);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null)br.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        factors = PlacementArrayGenerator.getArray("mc.txt");
     }
 
     public ArrayList<Ship> placeShipsFromFactors() {
@@ -61,6 +37,17 @@ public class AIController {
         findPlace(3, 2, result);
         findPlace(2, 3, result);
         findPlace(1, 4, result);
+
+//        for (int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 10; j++) {
+//                if (result[i][j] == true) {
+//                    System.out.print("#");
+//                } else {
+//                    System.out.print(".");
+//                }
+//            }
+//            System.out.println("");
+//        }
         return AIShips;
     }
 
