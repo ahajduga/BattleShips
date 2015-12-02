@@ -141,7 +141,9 @@ public class Game {
         pointsLeft = 0;
         pointsRight = 0;
 
-        boardRight = AI.placeShipsFromFactors();printBoard(Board.RIGHT);
+        boardRight = AI.placeShipsFromFactors();
+        printBoard(Board.RIGHT);
+        printBoard(Board.LEFT);
 
         currentPlayer = Player.HUMAN;
     }
@@ -187,10 +189,13 @@ public class Game {
         int hit = makeTurn(currentPlayer == Player.HUMAN ? Board.RIGHT : Board.LEFT, shot.x, shot.y);
         switch (hit) {
             case 2:
+//                System.out.println(currentPlayer + " sank");
                 return Effect.SANK;
             case 1:
+//                System.out.println(currentPlayer + " hit");
                 return Effect.HIT;
             default:
+//                System.out.println(currentPlayer + " missed");
                 if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
                 else currentPlayer = currentPlayer.HUMAN;
                 return Effect.MISSED;

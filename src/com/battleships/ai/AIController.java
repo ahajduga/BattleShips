@@ -192,7 +192,7 @@ int x=0, y = 0;
             x++;
             y=0;
         }
-        return new Coords(x,y++);
+        return new Coords(y++, x);
 //        Coords x = new Coords(new SecureRandom().nextInt(10), new SecureRandom().nextInt(10));
 //        if(alreadyHit[x.y][x.x] == true)
 //            return null;

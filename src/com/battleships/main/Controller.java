@@ -243,20 +243,20 @@ public class Controller implements Initializable {
         if (field.getColor() != INIT_FIELD_COLOR) return;
         Effect effect = gameInstance.getEffect(field.getCoords());
         if (effect == Effect.MISSED) {
-            System.out.println("missed");
+//            System.out.println("missed");
             field.setColor(MISSED_COLOR);
             List<Coords> coords = gameInstance.getAIMove();
             for(Coords c : coords){
-                if(getField(c.y,c.x).getColor()==FILL_COLOR)
-                    getField(c.y,c.x).setColor(AI_HIT_COLOR);
-                else getField(c.y,c.x).setColor(MISSED_COLOR);
+                if(getField(c.x,c.y).getColor()==FILL_COLOR)
+                    getField(c.x,c.y).setColor(AI_HIT_COLOR);
+                else getField(c.x,c.y).setColor(MISSED_COLOR);
             }
 
         } else if (effect == Effect.HIT) {
-            System.out.println("hit");
+//            System.out.println("hit");
             field.setColor(HIGHLIGHT_COLOR);
         } else if (effect == Effect.SANK){
-            System.out.println("sink");
+//            System.out.println("sink");
             sink(gameInstance.getShipArray());
         }
 
