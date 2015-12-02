@@ -57,12 +57,13 @@ public class Game {
      * @return
      */
     public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Direction direction) {
+
         Ship ship = new Ship(length);
-        if (!ship.setShip(length, row, col, direction)) {
+        if (!ship.setShip(length, col, row, direction)) {
             return false;
         }
 
-        if (board) {
+        if (board) {//System.out.println(length + " " + row + " " + col + " " + direction);
             for (Ship s : boardRight) {
                 if (s.isCollision(ship)) {
                     return false;
@@ -89,7 +90,7 @@ public class Game {
     ) {
         if (isPlacementPossible(board, length, row, col, direction)) {
             Ship ship = new Ship(length);
-            ship.setShip(length, row, col, direction);
+            ship.setShip(length, col, row, direction);
             if (board)
                 boardRight.add(ship);
             else
