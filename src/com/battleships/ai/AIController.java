@@ -5,9 +5,6 @@ import com.battleships.placement.PlacementArrayGenerator;
 import com.battleships.utils.Coords;
 import com.battleships.utils.Direction;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
@@ -15,14 +12,15 @@ import java.util.ArrayList;
  * Created by alex on 02.12.15.
  */
 public class AIController {
-
+int x=0, y = 0;
     private int[][] factors;
+    private boolean[][] alreadyHit;
     private ArrayList<Ship> AIShips;
 
     public AIController(){
 
         factors = new int[10][10];
-
+        alreadyHit = new boolean[10][10];
         factors = PlacementArrayGenerator.getArray("mc.txt");
     }
 
@@ -188,6 +186,17 @@ public class AIController {
     }
 
     public Coords makeRandomMove(){
-        return new Coords(new SecureRandom().nextInt(10), new SecureRandom().nextInt(10));
+
+
+        if(y>= 10){
+            x++;
+            y=0;
+        }
+        return new Coords(x,y++);
+//        Coords x = new Coords(new SecureRandom().nextInt(10), new SecureRandom().nextInt(10));
+//        if(alreadyHit[x.y][x.x] == true)
+//            return null;
+//        alreadyHit[x.y][x.x] = true;
+//        return x;
     }
 }

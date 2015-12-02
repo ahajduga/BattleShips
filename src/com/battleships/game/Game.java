@@ -57,13 +57,12 @@ public class Game {
      * @return
      */
     public Boolean isPlacementPossible(Boolean board, Integer length, Integer row, Integer col, Direction direction) {
-
         Ship ship = new Ship(length);
-        if (!ship.setShip(length, col, row, direction)) {
+        if (!ship.setShip(length, row, col, direction)) {
             return false;
         }
 
-        if (board) {//System.out.println(length + " " + row + " " + col + " " + direction);
+        if (board) {
             for (Ship s : boardRight) {
                 if (s.isCollision(ship)) {
                     return false;
@@ -90,7 +89,7 @@ public class Game {
     ) {
         if (isPlacementPossible(board, length, row, col, direction)) {
             Ship ship = new Ship(length);
-            ship.setShip(length, col, row, direction);
+            ship.setShip(length, row, col, direction);
             if (board)
                 boardRight.add(ship);
             else
@@ -214,8 +213,8 @@ public class Game {
                 }
             }
         }
-//        if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-//        else currentPlayer = currentPlayer.HUMAN;
+    //    if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+    //    else currentPlayer = currentPlayer.HUMAN;
         return 0;
     }
 
@@ -227,16 +226,18 @@ public class Game {
             case 1:
                 return Effect.HIT;
             default:
-                if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
-                else currentPlayer = currentPlayer.HUMAN;
+            if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
+                   else currentPlayer = currentPlayer.HUMAN;
                 return Effect.MISSED;
         }
     }
 
     public List<Coords> getAIMove(){
         List<Coords> moves = new ArrayList<>();
-        Coords move = AI.makeRandomMove();
+        Coords move = null;
+        while((move = AI.makeRandomMove()) == null);
         while(true){
+            Effect eff = getEffect(move);
             if(getEffect(move)==Effect.MISSED){
                 moves.add(move);
                 break;
