@@ -132,6 +132,8 @@ public class Controller implements Initializable {
         currentField.setFill(HIGHLIGHT_COLOR);
         boardLeft.setOnMouseMoved(event -> {
             clearShadows();
+
+
             currDir = getDirection(event);
 
             updateFields();
@@ -172,6 +174,7 @@ public class Controller implements Initializable {
 
         int x = field.getCoords().x;
         int y = field.getCoords().y;
+        shadows.add(field);
         for (int i = 1; i < mast; i++) {
             if (currDir == Direction.UP) {
                 if (y - i < 0) return false;
@@ -273,11 +276,10 @@ public class Controller implements Initializable {
         if (currentLabel == null)
             return;
         if (currentField == null) {
-
-            if (gameInstance.isPlaceAndSurrFree(false, field.getCoords().y, field.getCoords().x)) {
+            if (gameInstance.isPlaceAndSurrFree(true, field.getCoords().y, field.getCoords().x)) {
                 currentField = field;
                 if (shipMap.get(currentLabel) == 1) {
-                    gameInstance.setNewShipInGame(false, 1, currentField.getCoords().y, currentField.getCoords().x, Direction.DOWN);
+                    gameInstance.setNewShipInGame(true, 1, currentField.getCoords().y, currentField.getCoords().x, Direction.DOWN);
                     clearSelection();
 
                 } else
@@ -286,7 +288,7 @@ public class Controller implements Initializable {
         } else {
             if (shadows.size() != 0) {
                 currentField.setFill(Color.RED);
-                gameInstance.setNewShipInGame(false, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir);
+                gameInstance.setNewShipInGame(true, shipMap.get(currentLabel), currentField.getCoords().y, currentField.getCoords().x, currDir);
                 clearSelection();
                 fillShadows();
 
