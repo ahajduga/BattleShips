@@ -46,6 +46,7 @@ public class Controller implements Initializable {
     private List<Field> shadows = new ArrayList<>();
     private Direction currDir;
     private State currentState = State.PLACING;
+
     private void initShipMap() {
         shipMap.put(mast1Field, 1);
         shipMap.put(mast2Field, 2);
@@ -236,11 +237,9 @@ public class Controller implements Initializable {
     }
 
     private void handleEnemyBoardClick(Field field) {
-        //   if (gameInstance.getCurrentPlayer() != Player.HUMAN) return;
         if (field.getColor() != INIT_FIELD_COLOR) return;
         Effect effect = gameInstance.getEffect(field.getCoords());
         if (effect == Effect.MISSED) {
-//            System.out.println("missed");
             field.setColor(MISSED_COLOR);
             List<Coords> coords = gameInstance.getAIMove();
             for (Coords c : coords) {
@@ -250,10 +249,8 @@ public class Controller implements Initializable {
             }
 
         } else if (effect == Effect.HIT) {
-//            System.out.println("hit");
             field.setColor(HIGHLIGHT_COLOR);
         } else if (effect == Effect.SANK) {
-//            System.out.println("sink");
             sink(gameInstance.getShipArray());
         }
 
