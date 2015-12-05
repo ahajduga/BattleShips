@@ -9,7 +9,7 @@ import java.io.*;
  */
 public class PlacementArrayGenerator {
     public static void generate(String filePath, int iterationCount) {
-        int[][] values = new int[10][10];
+        float[][] values = new float[10][10];
         Game game = new Game();
 
         values = fillValues(game, iterationCount);
@@ -18,15 +18,15 @@ public class PlacementArrayGenerator {
 
     }
 
-    public static int[][] getArray(String filePath) {
-        int[][] values = new int[10][10];
+    public static float[][] getArray(String filePath) {
+        float[][] values = new float[10][10];
         int row = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = "";
             while ((line = br.readLine()) != null) {
                 String[] split = line.split(" ");
                 for (int i = 0; i < 10; i++) {
-                    values[row][i] = Integer.parseInt(split[i]);
+                    values[row][i] = Float.parseFloat(split[i]);
                 }
                 row++;
             }
@@ -39,7 +39,7 @@ public class PlacementArrayGenerator {
     }
 
 
-    public static void save(int[][] values, String filePath) {
+    public static void save(float[][] values, String filePath) {
         try (PrintWriter writer = new PrintWriter(filePath)) {
 
             for (int i = 0; i < 10; i++) {
@@ -57,7 +57,7 @@ public class PlacementArrayGenerator {
 
     }
 
-    private static String getRowFromValues(int[] values, int i) {
+    private static String getRowFromValues(float[] values, int i) {
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < 10; j++) {
             sb.append(values[i + 10 * j] + " ");
@@ -65,12 +65,12 @@ public class PlacementArrayGenerator {
         return sb.toString();
     }
 
-    private static int[][] fillValues(Game game, int iterationCount) {
-        int[][] finalValues = new int[10][10];
+    private static float[][] fillValues(Game game, int iterationCount) {
+        float[][] finalValues = new float[10][10];
 
         for (int iter = 0; iter < iterationCount; iter++) {
             boolean[][] boolShips = game.getRandomBoard();
-            int[][] values = new int[10][10];
+            float[][] values = new float[10][10];
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     values[i][j] = boolShips[i][j] == true ? 1 : 0;

@@ -13,13 +13,13 @@ import java.util.ArrayList;
  */
 public class AIController {
 int x=0, y = 0;
-    private int[][] factors;
+    private float[][] factors;
     private boolean[][] alreadyHit;
     private ArrayList<Ship> AIShips;
 
     public AIController(){
 
-        factors = new int[10][10];
+        factors = new float[10][10];
         alreadyHit = new boolean[10][10];
         factors = PlacementArrayGenerator.getArray("mc.txt");
     }

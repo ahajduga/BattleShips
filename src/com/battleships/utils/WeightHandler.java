@@ -17,7 +17,7 @@ public class WeightHandler {
         totalValue = getSum(factors);
     }
 
-    private float getSum(float[][] factors){
+    public float getSum(float[][] factors){
         float sum=0.0f;
         for(int i=0;i<10;i++){
             for(int j=0;j<10;j++){
@@ -32,6 +32,7 @@ public class WeightHandler {
         float subtractionValue = getSubtractionValue(values, x, y);
      //   float sumSubtracted = 0.0f;
         correctValues(subtractionValue, x, y);
+        currentWeight-=STEP;
     }
 
     private void correctValues(float subtractionValue, int x, int y){
@@ -47,12 +48,12 @@ public class WeightHandler {
         float valuesCount = 10;
         sumSubtracted += currentWeight/2;
         factors[x][y] -= currentWeight/2;
-        for(int i=-1;i<=1;i++){
+        for(int i=x-1;i<=x+1;i++){
             if(i<0 || i >= 10){
                 valuesCount--;
                 continue;
             }
-            for(int j=-1;j<=1;j++){
+            for(int j=x-1;j<=x+1;j++){
                 if(j<0 || j >= 10){
                     valuesCount--;
                     continue;
@@ -61,7 +62,7 @@ public class WeightHandler {
                 factors[i][j] -= currentWeight/2;
             }
         }
-        return sumSubtracted/valuesCount;
+        return sumSubtracted/(100-valuesCount);
     }
 
 
