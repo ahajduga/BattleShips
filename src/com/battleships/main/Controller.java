@@ -104,6 +104,7 @@ public class Controller implements Initializable {
         if (mast1Left + mast2Left + mast3Left + mast4Left != 0) { //TODO == !=
             startButton.setDisable(false);
             startButton.setOnMouseClicked(event -> {
+                startButton.setDisable(true);
                 currentState = State.SHOOTING;
                 mast1Field.setDisable(true);
                 mast2Field.setDisable(true);
