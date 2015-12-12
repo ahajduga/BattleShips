@@ -1,8 +1,10 @@
 package com.battleships.game;
 
 import com.battleships.ai.AIController;
+import com.battleships.ga.GAHandler;
 import com.battleships.utils.*;
 
+import java.io.*;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +20,11 @@ public class Game {
     private Player currentPlayer;
 
     private AIController AI;
+    private GAHandler gaHandler;
 
     //Ships count: 4x1, 3x2, 3x2, 1x4
     private int SINGLE_MAST_SHIPS = 4;
-    private int DUOBLE_MAST_SHIPS = 3;
+    private int DOUBLE_MAST_SHIPS = 3;
     private int TRIPLE_MAST_SHIPS = 2;
     private int QUAD_MAST_SHIPS = 1;
 
@@ -31,6 +34,8 @@ public class Game {
     private boolean[][] lastSankShipLeft;
     private boolean[][] lastSankShipRight;
 
+    private double target[];
+
     public Game() {
         pointsLeft = 0;
         pointsRight = 0;
@@ -39,6 +44,8 @@ public class Game {
         boardRight = new ArrayList<>();
 
         AI = new AIController();
+        target = readExpBoardFromFile("target.txt");
+        gaHandler = new GAHandler("gp.txt", target, this);
     }
 
     public Boolean isPlacementPossible(
@@ -100,7 +107,7 @@ public class Game {
                 defaultShipCount = SINGLE_MAST_SHIPS;
                 break;
             case 2:
-                defaultShipCount = DUOBLE_MAST_SHIPS;
+                defaultShipCount = DOUBLE_MAST_SHIPS;
                 break;
             case 3:
                 defaultShipCount = TRIPLE_MAST_SHIPS;
@@ -115,6 +122,17 @@ public class Game {
                     .filter((ship) -> ship.getMastCount() == mastCount).count();
         } else {
             return defaultShipCount - (int) boardLeft.stream()
+                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+        }
+    }
+
+    public Integer getShipsCount(Board board, Integer mastCount) {
+
+        if (board==Board.RIGHT) {
+            return (int) boardRight.stream()
+                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+        } else {
+            return (int) boardLeft.stream()
                     .filter((ship) -> ship.getMastCount() == mastCount).count();
         }
     }
@@ -156,6 +174,30 @@ public class Game {
         }
     }
 
+    public boolean isPossibleShoot(Board board, Coords coords){
+
+        if(getShipsCount(board, 1)>0){
+            return isPlacementPossible(board, 1, coords.x, coords.y, Direction.DOWN);
+        } else if(getShipsCount(board, 2)>0){
+            return (isPlacementPossible(board, 2, coords.x, coords.y, Direction.DOWN)
+                    || isPlacementPossible(board, 2, coords.x, coords.y, Direction.UP)
+                    || isPlacementPossible(board, 2, coords.x, coords.y, Direction.LEFT)
+                    || isPlacementPossible(board, 2, coords.x, coords.y, Direction.RIGHT));
+        } else if(getShipsCount(board, 3)>0){
+            return (isPlacementPossible(board, 3, coords.x, coords.y, Direction.DOWN)
+                    || isPlacementPossible(board, 3, coords.x, coords.y, Direction.UP)
+                    || isPlacementPossible(board, 3, coords.x, coords.y, Direction.LEFT)
+                    || isPlacementPossible(board, 3, coords.x, coords.y, Direction.RIGHT));
+        } else if(getShipsCount(board, 4)>0){
+            return (isPlacementPossible(board, 4, coords.x, coords.y, Direction.DOWN)
+                    || isPlacementPossible(board, 4, coords.x, coords.y, Direction.UP)
+                    || isPlacementPossible(board, 4, coords.x, coords.y, Direction.LEFT)
+                    || isPlacementPossible(board, 4, coords.x, coords.y, Direction.RIGHT));
+        } else {
+            return false;
+        }
+    }
+
     public int makeTurn(Board board, Integer row, Integer col) {
         if (board==Board.RIGHT) {
             for (Ship ship : boardRight) {
@@ -189,13 +231,10 @@ public class Game {
         int hit = makeTurn(currentPlayer == Player.HUMAN ? Board.RIGHT : Board.LEFT, shot.x, shot.y);
         switch (hit) {
             case 2:
-//                System.out.println(currentPlayer + " sank");
                 return Effect.SANK;
             case 1:
-//                System.out.println(currentPlayer + " hit");
                 return Effect.HIT;
             default:
-//                System.out.println(currentPlayer + " missed");
                 if (currentPlayer == Player.HUMAN) currentPlayer = Player.AI;
                 else currentPlayer = currentPlayer.HUMAN;
                 return Effect.MISSED;
@@ -206,14 +245,24 @@ public class Game {
         List<Coords> moves = new ArrayList<>();
 
         while(true){
-            Coords move = null;
-            while((move = AI.makeRandomMove()) == null);
+            Coords move = gaHandler.getShoot(Board.LEFT);
             Effect eff = getEffect(move);
             if(eff==Effect.MISSED){
                 moves.add(move);
+                gaHandler.setHistory(move, 1);
                 break;
+
+            } else if(eff==Effect.HIT){
+                moves.add(move);
+                gaHandler.setHistory(move, 2);
+                if(!gaHandler.isSinking()){
+                    gaHandler.setIsSinking(true);
+                }
+
             } else {
                 moves.add(move);
+                gaHandler.setHistory(move, 3);
+                gaHandler.setIsSinking(false);
             }
         }
         return moves;
@@ -314,7 +363,7 @@ public class Game {
                 }
             }
 
-            for (int i = 0; i < DUOBLE_MAST_SHIPS; i++) {
+            for (int i = 0; i < DOUBLE_MAST_SHIPS; i++) {
                 if (setNewShipInGame(Board.RIGHT,
                         2,
                         new SecureRandom().nextInt(10),
@@ -336,7 +385,7 @@ public class Game {
 
             System.out.println("Ustawiono statkow: " + shipsSet);
 
-            if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DUOBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
+            if (shipsSet == (QUAD_MAST_SHIPS + TRIPLE_MAST_SHIPS + DOUBLE_MAST_SHIPS + SINGLE_MAST_SHIPS)) {
                 for (Ship s : boardLeft) {
                     randomBoard = s.setOnRandomBoard(randomBoard);
                 }
@@ -378,6 +427,45 @@ public class Game {
         }
 
         return boardPrint;
+    }
+
+    public double[] readExpBoardFromFile(String fileName){
+
+        double[] target = new double[100];
+
+        int pos = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                String[] split = line.split(" ");
+                for (int i = 0; i < 10; i++) {
+                    target[pos] = Double.parseDouble(split[i]);
+                    pos++;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return target;
+    }
+
+    public void saveExpBoardToFile(String fileName){
+
+        try (PrintWriter writer = new PrintWriter(fileName)) {
+
+            for (int i = 0; i < 100; i+=10) {
+                String line = "";
+                for (int j = 0; j < 10; j++) {
+                    line += target[i+j] + " ";
+                }
+                writer.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Ship> getBoardLeft() {
