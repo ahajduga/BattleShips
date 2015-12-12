@@ -128,13 +128,20 @@ public class Game {
 
     public Integer getShipsCount(Board board, Integer mastCount) {
 
+        int ships = 0;
+
         if (board==Board.RIGHT) {
-            return (int) boardRight.stream()
-                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+
+            for(Ship ship : boardRight){
+                if(ship.getMastCount()==mastCount && !ship.isSank()) ships++;
+            }
         } else {
-            return (int) boardLeft.stream()
-                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+            for(Ship ship : boardLeft){
+                if(ship.getMastCount()==mastCount && !ship.isSank()) ships++;
+            }
         }
+
+        return ships;
     }
 
     public Boolean isPlaceAndSurrFree(Board board, Integer row, Integer col) {
