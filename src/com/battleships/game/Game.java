@@ -255,9 +255,8 @@ public class Game {
             } else if(eff==Effect.HIT){
                 moves.add(move);
                 gaHandler.setHistory(move, 2);
-                if(!gaHandler.isSinking()){
-                    gaHandler.setIsSinking(true);
-                }
+                if(!gaHandler.isSinking()) gaHandler.setIsSinking(true);
+                gaHandler.addToSinkingHit(move);
 
             } else {
                 moves.add(move);

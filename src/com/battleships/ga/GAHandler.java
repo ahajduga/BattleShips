@@ -196,7 +196,7 @@ public class GAHandler {
                 }
             }
 
-            return random.get(new SecureRandom().nextInt(random.size()-1));
+            return random.get(new SecureRandom().nextInt(random.size()));
 
         } else {
 
@@ -205,12 +205,12 @@ public class GAHandler {
 
             if(h1.x == h2.x){
                 int max=0;
-                for(Coords c : getSinkingHit()){
+                for(Coords c : sinkingHit){
                     if(c.y > max) max = c.y;
                 }
                 if(max==9 || history[h1.x][max+1]!=0){
                     int min=10;
-                    for(Coords c2 : getSinkingHit()){
+                    for(Coords c2 : sinkingHit){
                         if(c2.y < min) min = c2.y;
                     }
                     return new Coords(h1.x, min-1);
@@ -226,7 +226,7 @@ public class GAHandler {
                 }
                 if(max==9 || history[max+1][h1.y]!=0){
                     int min=10;
-                    for(Coords c2 : getSinkingHit()){
+                    for(Coords c2 : sinkingHit){
                         if(c2.x < min) min = c2.x;
                     }
                     return new Coords(min-1, h1.y);
@@ -246,8 +246,8 @@ public class GAHandler {
         this.isSinking = isSinking;
     }
 
-    public ArrayList<Coords> getSinkingHit() {
-        return sinkingHit;
+    public void addToSinkingHit(Coords move){
+        sinkingHit.add(move);
     }
 
     public void setHistory(Coords move, int value) {
