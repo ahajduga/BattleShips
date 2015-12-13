@@ -45,6 +45,7 @@ public class GAHandler {
         for(int i = 0; i < 100; i++)
         {
             if(!game.isPossibleShoot(board, new Coords(i % 10, i / 10))) dist[i] = 0;
+            if(history[i%10][i/10] != 0) dist[i] = 0;
         }
         double total = 0;
         for(int i=0;i<100;i++)
