@@ -30,6 +30,8 @@ public class Game {
 
     private ArrayList<Ship> boardLeft;
     private ArrayList<Ship> boardRight;
+    private ArrayList<Ship> boardLeftSank;
+    private ArrayList<Ship> boardRightSank;
 
     private boolean[][] lastSankShipLeft;
     private boolean[][] lastSankShipRight;
@@ -42,6 +44,8 @@ public class Game {
 
         boardLeft = new ArrayList<>();
         boardRight = new ArrayList<>();
+        boardLeftSank = new ArrayList<>();
+        boardRightSank = new ArrayList<>();
 
         AI = new AIController();
         target = readExpBoardFromFile("target.txt");
@@ -69,6 +73,36 @@ public class Game {
             return true;
         } else {
             for (Ship s : boardLeft) {
+                if (s.isCollision(ship)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    public Boolean isThereShipPossible(
+            Board board,
+            Integer length,
+            Integer row,
+            Integer col,
+            Direction direction
+    ) {
+        Ship ship = new Ship(length);
+        if (!ship.setShip(length, row, col, direction)) {
+            return false;
+        }
+
+        if (board==Board.RIGHT) {
+            for (Ship s : boardRightSank) {
+                if (s.isCollision(ship)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            for (Ship s : boardLeftSank) {
                 if (s.isCollision(ship)) {
                     return false;
                 }
@@ -128,13 +162,20 @@ public class Game {
 
     public Integer getShipsCount(Board board, Integer mastCount) {
 
+        int ships = 0;
+
         if (board==Board.RIGHT) {
-            return (int) boardRight.stream()
-                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+
+            for(Ship ship : boardRight){
+                if(ship.getMastCount()==mastCount && !ship.isSank()) ships++;
+            }
         } else {
-            return (int) boardLeft.stream()
-                    .filter((ship) -> ship.getMastCount() == mastCount).count();
+            for(Ship ship : boardLeft){
+                if(ship.getMastCount()==mastCount && !ship.isSank()) ships++;
+            }
         }
+
+        return ships;
     }
 
     public Boolean isPlaceAndSurrFree(Board board, Integer row, Integer col) {
@@ -177,22 +218,22 @@ public class Game {
     public boolean isPossibleShoot(Board board, Coords coords){
 
         if(getShipsCount(board, 1)>0){
-            return isPlacementPossible(board, 1, coords.x, coords.y, Direction.DOWN);
+            return isThereShipPossible(board, 1, coords.x, coords.y, Direction.DOWN);
         } else if(getShipsCount(board, 2)>0){
-            return (isPlacementPossible(board, 2, coords.x, coords.y, Direction.DOWN)
-                    || isPlacementPossible(board, 2, coords.x, coords.y, Direction.UP)
-                    || isPlacementPossible(board, 2, coords.x, coords.y, Direction.LEFT)
-                    || isPlacementPossible(board, 2, coords.x, coords.y, Direction.RIGHT));
+            return (isThereShipPossible(board, 2, coords.x, coords.y, Direction.DOWN)
+                    || isThereShipPossible(board, 2, coords.x, coords.y, Direction.UP)
+                    || isThereShipPossible(board, 2, coords.x, coords.y, Direction.LEFT)
+                    || isThereShipPossible(board, 2, coords.x, coords.y, Direction.RIGHT));
         } else if(getShipsCount(board, 3)>0){
-            return (isPlacementPossible(board, 3, coords.x, coords.y, Direction.DOWN)
-                    || isPlacementPossible(board, 3, coords.x, coords.y, Direction.UP)
-                    || isPlacementPossible(board, 3, coords.x, coords.y, Direction.LEFT)
-                    || isPlacementPossible(board, 3, coords.x, coords.y, Direction.RIGHT));
+            return (isThereShipPossible(board, 3, coords.x, coords.y, Direction.DOWN)
+                    || isThereShipPossible(board, 3, coords.x, coords.y, Direction.UP)
+                    || isThereShipPossible(board, 3, coords.x, coords.y, Direction.LEFT)
+                    || isThereShipPossible(board, 3, coords.x, coords.y, Direction.RIGHT));
         } else if(getShipsCount(board, 4)>0){
-            return (isPlacementPossible(board, 4, coords.x, coords.y, Direction.DOWN)
-                    || isPlacementPossible(board, 4, coords.x, coords.y, Direction.UP)
-                    || isPlacementPossible(board, 4, coords.x, coords.y, Direction.LEFT)
-                    || isPlacementPossible(board, 4, coords.x, coords.y, Direction.RIGHT));
+            return (isThereShipPossible(board, 4, coords.x, coords.y, Direction.DOWN)
+                    || isThereShipPossible(board, 4, coords.x, coords.y, Direction.UP)
+                    || isThereShipPossible(board, 4, coords.x, coords.y, Direction.LEFT)
+                    || isThereShipPossible(board, 4, coords.x, coords.y, Direction.RIGHT));
         } else {
             return false;
         }
@@ -204,6 +245,7 @@ public class Game {
                 if (ship.isHit(row, col)) {
                     pointsLeft++;
                     if (ship.isSank()) {
+                        boardRightSank.add(ship);
                         lastSankShipRight = ship.getShipOriginal();
                         return 2;
                     } else {
@@ -216,6 +258,7 @@ public class Game {
                 if (ship.isHit(row, col)) {
                     pointsRight++;
                     if (ship.isSank()) {
+                        boardLeftSank.add(ship);
                         lastSankShipLeft = ship.getShipOriginal();
                         return 2;
                     } else {
