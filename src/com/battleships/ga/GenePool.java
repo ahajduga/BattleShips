@@ -52,6 +52,31 @@ public class GenePool {
         }
     }
 
+    public void savePool(String filePath) {
+        try (PrintWriter writer = new PrintWriter(filePath)) {
+
+            for (int i = 0; i < GENE_COUNT; i++) {
+
+                Gene currentGene = genes[i];
+                List<Wave> waves = currentGene.getHarmonics();
+                for (int j = 0; j < Gene.WAVE_COUNT; j++) {
+                    Wave currentWave = waves.get(j);
+                    double alpha = currentWave.getAlpha();
+                    double beta = currentWave.getBeta();
+                    int omegaA = currentWave.getOmegaA();
+                    int omegaB = currentWave.getOmegaB();
+                    String waveData = String.valueOf(alpha) + " " + omegaA + " " + beta + " " + omegaB;
+                    writer.println(waveData);
+
+                }
+                writer.println();
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void generateRandomGenePool(String filePath) {
         Random random = new Random();
         try (PrintWriter writer = new PrintWriter(filePath)) {

@@ -1,8 +1,10 @@
 package com.battleships.placement;
 
+import com.battleships.ga.GAHandler;
 import com.battleships.ga.Gene;
 import com.battleships.ga.GenePool;
 import com.battleships.ga.Wave;
+import com.battleships.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +16,13 @@ public class PlacementArrayGeneratorMain {
 
 
     public static void main(String[] args) {
-        GenePool genePool = new GenePool("testPool.txt",null);
-        System.out.println(genePool);
+        Game game = new Game();
+        GAHandler handler = new GAHandler("after1000advanceswithmutation.txt",game.target, game);
+        handler.advance(2);
+        double[] dist = handler.getBest().getDist();
 
+        double[] target = game.target;
+     //   handler.getPool().savePool("after1000advanceswithmutation.txt");
         GenePool.generateRandomGenePool("testPool.txt");
     }
 }

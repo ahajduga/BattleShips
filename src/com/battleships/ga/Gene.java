@@ -3,6 +3,7 @@ package com.battleships.ga;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Adam on 2015-12-09.
@@ -61,6 +62,10 @@ public class Gene {
 
     }
 
+    public List<Wave> getHarmonics() {
+        return harmonics;
+    }
+
     public static Gene cross(Gene father, Gene mother, boolean mutate) {
         double[] perfectChild = new double[100];
         double[] fatherDist = father.getDist();
@@ -73,25 +78,25 @@ public class Gene {
 
         DFT(true, perfectChild, imag);
         int[] sines = selectTop(perfectChild);
+
         int[] cosines = selectTop(perfectChild);
 
         List<Wave> harmonics = new ArrayList<>();
         for (int i = 0; i < WAVE_COUNT; i++) {
             //TODO zamienic te 1.0, 1 na sensowne
-            double alpha = mutate ? 1.0 : imag[sines[i]];
-            double beta = mutate ? 1.0 : perfectChild[cosines[i]];
-            int omegaA = mutate ? 1 : sines[i];
-            int omegaB = mutate ? 1 : cosines[i];
-//            double alpha = mutate && randFloat() <= MUTATION_RATE ? MAX_OF_SCALED_SIN_PLUS_COS - 2 * randFloat() * MAX_OF_SCALED_SIN_PLUS_COS : imaginary[sines[i]];
-//            double beta = mutate && randFloat() <= MUTATION_RATE ? MAX_OF_SCALED_SIN_PLUS_COS - 2 * randFloat() * MAX_OF_SCALED_SIN_PLUS_COS : perfectChild[cosines[i]];
-//            int omegaA = mutate && randFloat() <= MUTATION_RATE ? (rand() % 48) + 1 : sines[i];
-//            int omegaB = mutate && randFloat() <= MUTATION_RATE ? (rand() % 48) + 1 : cosines[i];
+            int maxAmp = 10000;
+            double rate = 0.1;
+            Random random = new Random();
+            double alpha = mutate  && (random.nextDouble() <= rate) ? maxAmp - 2*random.nextDouble()*maxAmp : imag[sines[i]];
+            double beta = mutate && (random.nextDouble() <= rate)? maxAmp - 2*random.nextDouble()*maxAmp : perfectChild[cosines[i]];
+            int omegaA = mutate && (random.nextDouble() <= rate)? (int)random.nextDouble()*50 : sines[i];
+            int omegaB = mutate && (random.nextDouble() <= rate)? (int)random.nextDouble()*50 : cosines[i];
 
             harmonics.add(new Wave(alpha, beta, omegaA, omegaB));
         }
 
 
-        return new Gene(null);
+        return new Gene(harmonics);
     }
 
     private static int[] selectTop(double[] values) {

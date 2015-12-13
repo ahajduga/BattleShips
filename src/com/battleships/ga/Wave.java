@@ -9,6 +9,23 @@ import java.util.List;
 public class Wave {
 
     private static final double STEP = 100.0 / (2.0 * Math.PI);
+
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public double getBeta() {
+        return beta;
+    }
+
+    public int getOmegaA() {
+        return omegaA;
+    }
+
+    public int getOmegaB() {
+        return omegaB;
+    }
+
     private double alpha, beta;
     int omegaA, omegaB;
 

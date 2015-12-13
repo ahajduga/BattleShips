@@ -34,7 +34,7 @@ public class Game {
     private boolean[][] lastSankShipLeft;
     private boolean[][] lastSankShipRight;
 
-    private double target[];
+    public double target[];
 
     public Game() {
         pointsLeft = 0;
@@ -45,7 +45,7 @@ public class Game {
 
         AI = new AIController();
         target = readExpBoardFromFile("target.txt");
-        gaHandler = new GAHandler("gp.txt", target, this);
+        gaHandler = new GAHandler("after1000advanceswithmutation.txt", target, this);
     }
 
     public Boolean isPlacementPossible(

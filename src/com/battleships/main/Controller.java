@@ -54,6 +54,19 @@ public class Controller implements Initializable {
         shipMap.put(mast4Field, 4);
     }
 
+
+    private void generate(){
+        gameInstance.setNewShipInGame(Board.LEFT,4,5,1,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,3,2,1,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,3,6,4,Direction.RIGHT);
+        gameInstance.setNewShipInGame(Board.LEFT,2,3,4,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,2,4,6,Direction.RIGHT);
+        gameInstance.setNewShipInGame(Board.LEFT,2,4,9,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,1,0,8,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,1,2,9,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,1,2,6,Direction.DOWN);
+        gameInstance.setNewShipInGame(Board.LEFT,1,1,3,Direction.DOWN);
+    }
     private void initBoards() {
         for (int i = 0; i < boardLeft.getRowConstraints().size(); i++) {
             for (int j = 0; j < boardLeft.getColumnConstraints().size(); j++) {
@@ -123,6 +136,7 @@ public class Controller implements Initializable {
         initBoards();
         initShipMap();
         initFields();
+        generate();
     }
 
     private void beginPlacing(Field field) {

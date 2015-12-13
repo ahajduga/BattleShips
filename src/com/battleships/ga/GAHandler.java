@@ -26,6 +26,9 @@ public class GAHandler {
         history = new int[10][10];
     }
 
+    public Gene getBest(){
+        return pool.getBest();
+    }
     public void advance(){
         pool.advance();
     }
@@ -45,6 +48,7 @@ public class GAHandler {
         for(int i = 0; i < 100; i++)
         {
             if(!game.isPossibleShoot(board, new Coords(i % 10, i / 10))) dist[i] = 0;
+            if(history[i%10][i/10] != 0) dist[i] = 0;
         }
         double total = 0;
         for(int i=0;i<100;i++)
@@ -57,16 +61,20 @@ public class GAHandler {
             dist[i] += dist[i-1];
         Random random = new Random();
         double rand = random.nextDouble();
-        int x=0,y=0;
-        for(int i = 0; i < 99; i++) //was /*dist[i] < rand &&*/ <- i think that's wrong
-        {
-            if(dist[i] > rand)
+        int x=-1,y=-1;
+        while(x==-1) {
+
+            for (int i = 0; i < 99; i++) //was /*dist[i] < rand &&*/ <- i think that's wrong
             {
-                x = i % 10;
-                y = i / 10;
-                break;
+                if (dist[i] > rand) {
+                    x = i % 10;
+                    y = i / 10;
+                    break;
+                }
             }
+            rand -=0.05;
         }
+        System.out.println("x = " + x + ", y = " + y);
         return new Coords(x,y);
     }
 
