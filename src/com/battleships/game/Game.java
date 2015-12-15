@@ -2,12 +2,14 @@ package com.battleships.game;
 
 import com.battleships.ai.AIController;
 import com.battleships.ga.GAHandler;
+import com.battleships.placement.PlacementArrayGenerator;
 import com.battleships.utils.*;
 
 import java.io.*;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by alex on 18.10.15.
@@ -21,6 +23,7 @@ public class Game {
 
     private AIController AI;
     private GAHandler gaHandler;
+    private WeightHandler weightHandler;
 
     //Ships count: 4x1, 3x2, 3x2, 1x4
     private int SINGLE_MAST_SHIPS = 4;
@@ -36,7 +39,8 @@ public class Game {
     private boolean[][] lastSankShipLeft;
     private boolean[][] lastSankShipRight;
 
-    public double target[];
+    private double target[];
+    private float[][] factors;
 
     public Game() {
         pointsLeft = 0;
@@ -47,9 +51,11 @@ public class Game {
         boardLeftSank = new ArrayList<>();
         boardRightSank = new ArrayList<>();
 
-        AI = new AIController();
         target = readExpBoardFromFile("target.txt");
-        gaHandler = new GAHandler("after1000advanceswithmutation.txt", target, this);
+        gaHandler = new GAHandler("gp.txt", target, this);
+        factors = PlacementArrayGenerator.getArray("mc.txt");
+        AI = new AIController(factors);
+        weightHandler = new WeightHandler(factors);
     }
 
     public Boolean isPlacementPossible(
@@ -205,6 +211,8 @@ public class Game {
         printBoard(Board.LEFT);
 
         currentPlayer = Player.HUMAN;
+
+        saveExpBoardToFile("target.txt");
     }
 
     public void eraseBoard(Board board) {
@@ -272,6 +280,12 @@ public class Game {
 
     public Effect getEffect(Coords shot) {
         int hit = makeTurn(currentPlayer == Player.HUMAN ? Board.RIGHT : Board.LEFT, shot.x, shot.y);
+
+        if(currentPlayer == Player.HUMAN){
+            weightHandler.shoot(shot.x, shot.y);
+            PlacementArrayGenerator.save(factors, "mc.txt");
+        }
+
         switch (hit) {
             case 2:
                 return Effect.SANK;
@@ -496,16 +510,65 @@ public class Game {
 
     public void saveExpBoardToFile(String fileName){
 
+        int gamesCount = readGamesCount();
+
+        for(Ship ship : boardLeft){
+            for (int i = 0; i < 100; i+=10) {
+                for (int j = 0; j < 10; j++) {
+                    target[i+j] = gamesCount*target[i+j] + (ship.getShipOriginal()[i/10][j] ? 10 : 0);
+                }
+            }
+        }
+
+        gamesCount++;
+
         try (PrintWriter writer = new PrintWriter(fileName)) {
 
             for (int i = 0; i < 100; i+=10) {
                 String line = "";
                 for (int j = 0; j < 10; j++) {
-                    line += target[i+j] + " ";
+                    line += target[i+j]/gamesCount + " ";
                 }
                 writer.println(line);
             }
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        saveGamesCount(gamesCount);
+    }
+
+    public int readGamesCount(){
+
+        int gamesCount = 0;
+        try {
+
+            Scanner scanner = new Scanner(new File("games_count.txt"));
+            gamesCount = scanner.nextInt();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return gamesCount;
+    }
+
+    public void saveGamesCount(int gamesCount){
+
+        try{
+
+            File file = new File("games_count.txt");
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write("" + gamesCount);
+            bw.close();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

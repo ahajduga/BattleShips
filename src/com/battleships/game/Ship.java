@@ -72,7 +72,7 @@ public class Ship {
         return true;
     }
 
-    public Boolean isHit(Integer col, Integer row){
+    public Boolean isHit(Integer row, Integer col){
         if(ship[row][col]){
             ship[row][col] = false;
             return true;

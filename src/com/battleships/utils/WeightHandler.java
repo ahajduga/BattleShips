@@ -65,5 +65,7 @@ public class WeightHandler {
         return sumSubtracted/(100-valuesCount);
     }
 
-
+    public float[][] getFactors() {
+        return factors;
+    }
 }

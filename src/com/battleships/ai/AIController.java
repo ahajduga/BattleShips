@@ -17,11 +17,9 @@ int x=0, y = 0;
     private boolean[][] alreadyHit;
     private ArrayList<Ship> AIShips;
 
-    public AIController(){
-
-        factors = new float[10][10];
+    public AIController(float[][] factors){
         alreadyHit = new boolean[10][10];
-        factors = PlacementArrayGenerator.getArray("mc.txt");
+        this.factors = factors;
     }
 
     public ArrayList<Ship> placeShipsFromFactors() {
